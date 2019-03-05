@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group >
+        <item
+            android:id="@+id/menuItemSettings"
+            android:title="앱 설정" />
+        <item
+            android:id="@+id/menuItemParamSet"
+            android:title="파일 관리" />
+        <item
+            android:id="@+id/menuItemEdit"
+            android:title="편집 / 디바이스 RW" />
+        <item
+            android:id="@+id/menuItemMonitor"
+            android:title="모니터링" />
+    </group>
+</menu>

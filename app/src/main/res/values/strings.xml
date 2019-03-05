@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Nara Motion</string>
+    <string name="item1">item1</string>
+    <string name="item2">item2</string>
+    <string name="item3">item3</string>
+    <string name="read">읽기</string>
+    <string name="write">쓰기</string>
+    <string name="monitor_run">동작상태</string>
+    <string name="monitor_direction">방향</string>
+    <string name="monitor_i_rms">평균전류</string>
+    <string name="monitor_freq">동작주파수</string>
+    <string name="monitor_dc_voltage">DC 전압</string>
+    <string name="monitor_ipm_temperature">IPM 온도</string>
+    <string name="monitor_motor_temperature">모터온도</string>
+    <string name="monitor_on_count">누적모터동작횟수</string>
+    <string name="monitor_elapsed_hour">누적모터구동시간</string>
+    <string name="monitor_opterating_hour">누적인버터동작시간</string>
+    <string name="monitor_refresh_button">모니터링</string>
+</resources>
