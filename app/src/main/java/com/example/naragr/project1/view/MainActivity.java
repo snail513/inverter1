@@ -2,8 +2,10 @@ package com.example.naragr.project1.view;
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.usb.UsbManager;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Build;
@@ -11,20 +13,23 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -32,10 +37,14 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.naragr.project1.R;
+import com.example.naragr.project1.logic.ComPortHandler;
 import com.example.naragr.project1.logic.DataContainer;
 import com.example.naragr.project1.logic.FileManager;
+import com.example.naragr.project1.logic.MonitorThread;
 import com.example.naragr.project1.logic.NfcVComm;
+import com.example.naragr.project1.logic.ParamTable.Bool_t;
 import com.example.naragr.project1.logic.ParamTable.ParamTable;
+import com.example.naragr.project1.logic.ParamTable.Param_idx;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,27 +53,145 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import me.relex.circleindicator.CircleIndicator;
+
 public class MainActivity extends AppCompatActivity {
 
+    public static ComPortHandler mSerialPortHandler;
     public static MainActivity me;
     public static DataContainer dataContainer;
     private RecyclerView[] recyclerViewArray ;
     private NfcAdapter mNFCadapter;
     private PendingIntent mPendingIntent;
-    protected Spinner spinner;
-    private RWMode.Mode rwMode;
+    private RWMode.Mode rwMode = RWMode.Mode.Summary;
     final String defaultFile = "defaultFile";
+
+
+    ToggleButton mButtonRead;
+    ToggleButton mButtonWrite;
+    ToggleButton mButtonHotfix;
 
     public static int inputIdx = -1;
     public static String inputText = "";
     public static Vibrator vibe = null;
-    //public static boolean isVib= false;
     public ToggleButton mButtonRefresh;
-    public static ProgressBar mProgressbar;
+    private ImageButton mButtonTurnOn;
+    private boolean isForceToTurnOn = false;
+    private Button mButtonToParam;
+    private Button mButtonToMonitoring;
+    private Button mButtonToFile;
+    private Button mButtonToSummary;
+    private ToggleButton mButtonSwitchInput;
+    private TextView mTvSelectedFileName;
 
-    //public MonitorThread mMonitorThread;
 
 
+    private TextView[] tvCurrRPM = new TextView[5];
+    private TextView[] tvTarRPM = new TextView[5];
+    private TextView tvDirectionState;
+    private TextView tvProtectionState;
+    private TextView tvTripState;
+
+    LinearLayout mLayoutMainSummary;
+    private void setSummaryUIVisible(int isVisible) {
+
+        mLayoutMainSummary.setVisibility(isVisible);
+    }
+
+    private void generateSummaryUI()
+    {
+
+        mLayoutMainSummary = (LinearLayout)findViewById(R.id.layout_summary);
+        LayoutInflater inflater =  (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.layout_main_summary, mLayoutMainSummary);
+
+        tvCurrRPM[0] = findViewById(R.id.tvRPM0);
+        tvCurrRPM[1] = findViewById(R.id.tvRPM1);
+        tvCurrRPM[2] = findViewById(R.id.tvRPM2);
+        tvCurrRPM[3] = findViewById(R.id.tvRPM3);
+        tvCurrRPM[4] = findViewById(R.id.tvRPM4);
+
+        tvTarRPM[0] = findViewById(R.id.tvTarValue0);
+        tvTarRPM[1] = findViewById(R.id.tvTarValue1);
+        tvTarRPM[2] = findViewById(R.id.tvTarValue2);
+        tvTarRPM[3] = findViewById(R.id.tvTarValue3);
+        tvTarRPM[4] = findViewById(R.id.tvTarValue4);
+
+        tvDirectionState = findViewById(R.id.tvDirctionState);
+        tvDirectionState.setTextSize(20);
+        tvTripState = findViewById(R.id.tvError);
+        tvTripState.setTextSize(20);
+        tvProtectionState = findViewById(R.id.tvProtection);
+        tvProtectionState.setTextSize(20);
+        for(int i=0;i<5;i++)
+        {
+            tvCurrRPM[i].setTextSize(20);
+            tvTarRPM[i].setTextSize(20);
+        }
+    }
+
+    private void generateMainColtrollerUI(){
+        LinearLayout layoutMainController = (LinearLayout)findViewById(R.id.layout_control);
+        LayoutInflater inflater =  (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.layout_main_menu, layoutMainController);
+
+        mButtonTurnOn = (ImageButton)findViewById(R.id.buttonTurnOn);
+        mButtonToParam = (Button)findViewById(R.id.buttonToParam);
+        mButtonToMonitoring= (Button)findViewById(R.id.buttonToMonitor);
+        mButtonToFile = (Button)findViewById(R.id.buttonToFile);
+        mButtonToSummary = (Button)findViewById(R.id.buttonToSummary);
+        mButtonTurnOn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isForceToTurnOn = !isForceToTurnOn;
+                //Toast.makeText(me, "turnon = " + isForceToTurnOn, Toast.LENGTH_SHORT).show();
+                if(isForceToTurnOn){
+                    mButtonTurnOn.setImageResource(R.drawable.turn_on_button);
+                }
+                else
+                {
+                    mButtonTurnOn.setImageResource(R.drawable.turn_off_button);
+                }
+            }
+        });
+
+        mButtonToParam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                selectMenuItem(R.id.menuItemEdit);
+            }
+        });
+
+        mButtonToFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectMenuItem(R.id.menuItemParamSet);
+            }
+        });
+
+        mButtonToMonitoring.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectMenuItem(R.id.menuItemMonitor);
+            }
+        });
+
+        mButtonToSummary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectMenuItem(R.id.menuItemSummary);
+            }
+        });
+
+        mTvSelectedFileName = findViewById(R.id.textViewSelectedFileName);
+
+    }
+
+    public void updateSelectedFileName(String fileName)
+    {
+        mTvSelectedFileName.setText(fileName);
+    }
 
 
     @Override
@@ -78,15 +205,16 @@ public class MainActivity extends AppCompatActivity {
         if(!me.isItemSelectable)
             return;
         AlertDialog.Builder builder = new AlertDialog.Builder(me);
-        if(idx< ParamTable.param_max.length)
+        if(idx< ParamTable.getRangedLength())
         {
-            if(ParamTable.param_type[idx] == ParamTable.FLOAT_T)
+            if(ParamTable.table[idx].data_type == ParamTable.FLOAT_T)
+            //    if(ParamTable.param_type[idx] == ParamTable.FLOAT_T)
             {
-                builder.setTitle(title + "[" + (float)ParamTable.param_min[idx]/10+ "~"+ (float)ParamTable.param_max[idx]/10+"]");
+                builder.setTitle(title + "[" + (float)ParamTable.table[idx].minVal/10+ "~"+ (float)ParamTable.table[idx].maxVal/10+"]");
             }
             else
             {
-                builder.setTitle(title + "[" + ParamTable.param_min[idx]+ ":"+ ParamTable.param_max[idx]+"]");
+                builder.setTitle(title + "[" + ParamTable.table[idx].minVal+ ":"+ ParamTable.table[idx].maxVal+"]");
             }
 
 
@@ -141,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
         int listIdx = DataContainer.getTableIdx(inputIdx);
         Log.d("update", ""+listIdx+ ":"+inputText);
         swapRecyclerListView(recyclerViewArray[listIdx], dataContainer.getSubList(listIdx).getNameList(), dataContainer.getValueList(listIdx), listIdx);
-
+        updateSummary();
     }
 
     private void updateAllView() {
@@ -160,11 +288,46 @@ public class MainActivity extends AppCompatActivity {
         //me.swapFileListView();
         //me.swapSettingsListView();
         me.swapMonitorView();
+        me.updateSummary();
     }
 
-    private void updateMonitorView()
-    {
-        swapMonitorView();
+    private void updateSummary() {
+        float currRPM, tarRPM;
+        Bool_t direction;
+        String errorState = "";
+        String protection = "";
+
+        currRPM = (float)dataContainer.getObject(ParamTable.getParamValue(Param_idx.run_freq));
+        tarRPM = (float)dataContainer.getObject(ParamTable.getParamValue(Param_idx.value));
+        direction = (Bool_t) dataContainer.getObject(ParamTable.getParamValue(Param_idx.direction_control));
+
+        ///for(int i =0; i< 5; i++)
+        {
+            tvCurrRPM[0].setText(""+(int)((currRPM)%10));
+            tvCurrRPM[1].setText(""+(int)((currRPM/10)%10));
+            tvCurrRPM[2].setText(""+(int)((currRPM/100)%10));
+            tvCurrRPM[3].setText(""+(int)((currRPM/1000)%10));
+            tvCurrRPM[4].setText(""+(int)((currRPM/10000)%10));
+
+            tvTarRPM[0].setText(""+(int)((tarRPM)%10));
+            tvTarRPM[1].setText(""+(int)((tarRPM/10)%10));
+            tvTarRPM[2].setText(""+(int)((tarRPM/100)%10));
+            tvTarRPM[3].setText(""+(int)((tarRPM/1000)%10));
+            tvTarRPM[4].setText(""+(int)((tarRPM/10000)%10));
+
+            if(direction==Bool_t.TRUE)
+            {
+                tvDirectionState.setText("역방향");
+            }
+            else
+            {
+                tvDirectionState.setText("정방향");
+            }
+
+            tvProtectionState.setText(protection);
+            tvTripState.setText(errorState);
+        }
+
     }
 
 
@@ -197,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         dataContainer = new DataContainer();
-        bar = findViewById(R.id.progressBar);
+        //bar = findViewById(R.id.progressBar);
         if(!FileManager.isFileExist(new File(me.getFilesDir(), defaultFile)))
         {
 
@@ -209,6 +372,7 @@ public class MainActivity extends AppCompatActivity {
             dataContainer.load(me, defaultFile);
 
         }
+        //generateRunStopUI();
         generateMonitorUI();
         setToggleButtonUI();
         generateTabUI();
@@ -235,8 +399,11 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             mPendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
         }
+        //DialogFactory.showInitialDialog();
 
-        DialogFactory.showInitialDialog();
+        generateMainColtrollerUI();
+        generateSummaryUI();
+        updateSelectedFileName(dataContainer.mFileName);
         updateAllView();
     }
 
@@ -273,9 +440,33 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mButtonSwitchInput = findViewById(R.id.toggleButtonInput);
+        mButtonSwitchInput.setVisibility(View.INVISIBLE);
 
+        mButtonSwitchInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mButtonSwitchInput.isChecked())
+                {
+                    int baudrate= 9600;
+                    ;
+                    if(!ComPortHandler.connect(baudrate))
+                    {
+                        mButtonSwitchInput.setChecked(false);
+                    }
 
-        //mMonitorThread.start();
+                }
+                else
+                {
+                    if(ComPortHandler.isConnected())
+                    {
+                        ComPortHandler.closeSerialPort();
+                    }
+
+                }
+            }
+        });
+
     }
 
     void setMonitorEnter()
@@ -404,6 +595,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     boolean ReadTab(Tag detectedTag, int idx)
     {
         byte[] block = new byte[4];
@@ -413,36 +605,42 @@ public class MainActivity extends AppCompatActivity {
         short headPos = (short)dataContainer.getSubList(i).getDefaultAddress();
 
         byte[] result = NfcVComm.readTagMultiBlock(detectedTag, headPos, blockSize);
-
-        if(result !=null)
-        {
-            for(int j=0; j<blockSize; j++)
+        try{
+            if(result !=null)
             {
+                for(int j=0; j<blockSize; j++)
+                {
 
-                block[3] = result[j*4 + 0];
-                block[2] = result[j*4 + 1];
-                block[1] = result[j*4 + 2];
-                block[0] = result[j*4 + 3];
+                    block[3] = result[j*4 + 0];
+                    block[2] = result[j*4 + 1];
+                    block[1] = result[j*4 + 2];
+                    block[0] = result[j*4 + 3];
 
-                //System.arraycopy(result, j*4, block, 0, 4);
-                Log.d("MainActivity" , "cropped value : [" +j+"]"+ byteArrayToHexString(block));
-                int varIdx = DataContainer.getVarIdx(idx, j);
+                    //System.arraycopy(result, j*4, block, 0, 4);
+                    Log.d("MainActivity" , "cropped value : [" +j+"]"+ byteArrayToHexString(block));
+                    int varIdx = DataContainer.getVarIdx(idx, j);
 
-                dataContainer.setValue(varIdx, block);
+                    dataContainer.setValue(varIdx, block);
+                }
+                //Toast.makeText(this, "[ReadTab SUCCESS]"+idx +  "result= null", Toast.LENGTH_SHORT).show();
+
             }
-            //Toast.makeText(this, "[ReadTab SUCCESS]"+idx +  "result= null", Toast.LENGTH_SHORT).show();
 
-        }
+            else
+            {
+                Log.d("ReadTab", "[ERROR] tab[" + idx + "], result= null");
+                //Toast.makeText(this, "[ReadTab ERROR]"+idx +  "result= null", Toast.LENGTH_SHORT).show();
+                return false;
+            }
 
-        else
+            Log.d("ReadTab", "setValue = "+ dataContainer.toString());
+            return true;
+        }catch (Exception e)
         {
-            Log.d("ReadTab", "[ERROR] tab[" + idx + "], result= null");
-            //Toast.makeText(this, "[ReadTab ERROR]"+idx +  "result= null", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
             return false;
         }
 
-        Log.d("ReadTab", "setValue = "+ dataContainer.toString());
-        return true;
     }
 
     boolean ReadAll(Tag detectedTag)
@@ -471,6 +669,14 @@ public class MainActivity extends AppCompatActivity {
             ((RecyclerViewAdapter)recyclerViewArray[i].getAdapter()).refresh();
     }
 
+    boolean ReadMonitorValues2(Tag detectedTag)
+    {
+        MonitorThread thread = new MonitorThread(me, dataContainer);
+        thread.setTag(detectedTag);
+        thread.start();
+        return true;
+    }
+
     boolean ReadMonitorValues(Tag detectedTag)
     {
         if(detectedTag ==null)
@@ -480,7 +686,8 @@ public class MainActivity extends AppCompatActivity {
         byte blockSize = (byte)dataContainer.getSubList(statusInverterIdx).getTotalBlockSize();
         short headPos = (short)dataContainer.getSubList(statusInverterIdx).getDefaultAddress();
         Log.d("MonitorThread", "tabIdx = " + statusInverterIdx + ", block size = " + blockSize + ", headPos = " + headPos);
-        byte[] result = NfcVComm.readTagMultiBlock(detectedTag, headPos, blockSize);
+        //byte[] result = NfcVComm.readTagMultiBlock(detectedTag, headPos, blockSize);
+        byte[] result = NfcVComm.readTagMultiBlockForMonitoring(detectedTag, headPos, blockSize);
 
         if(result !=null)
         {
@@ -583,6 +790,8 @@ public class MainActivity extends AppCompatActivity {
             Log.e("MainActivity", "intent is null!");
             return;
         }
+
+
         final Tag detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         String[] tech = detectedTag.getTechList();
         String techList = "";
@@ -598,7 +807,10 @@ public class MainActivity extends AppCompatActivity {
         {
             case Read:
 
-                ReadTab(detectedTag, tabHost1.getCurrentTab());
+                if(ReadTab(detectedTag, tabHost1.getCurrentTab()))
+                    Toast.makeText(this, "Success Read!", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, "Failed Read! Please retry...", Toast.LENGTH_SHORT).show();
                 OnTag();
                 updateAllView();
                 //ReadTab(detectedTag, tabHost1.getCurrentTab());
@@ -606,14 +818,14 @@ public class MainActivity extends AppCompatActivity {
             case ReadAll:
 
                 if(ReadAll(detectedTag))
-                    Toast.makeText(this, "Success Tag!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Success ReadAll!", Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(this, "Failed Tag! Please retry...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Failed ReadAll! Please retry...", Toast.LENGTH_SHORT).show();
                 OnTag();
                 updateAllView();
                 break;
             case EditAndWrite:
-
+                Toast.makeText(this, "EditAndWrite try!", Toast.LENGTH_SHORT).show();
                 WriteEditedOnly(detectedTag);
                 OnTag();
                 updateAllView();
@@ -621,16 +833,16 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case CopyAndWriteAll:
 
-                //WriteAll(detectedTag);
+                Toast.makeText(this, "CopyAndWriteAll try!", Toast.LENGTH_SHORT).show();
                 ReadAllAndWriteDiff(detectedTag);
                 OnTag();
                 updateAllView();
                 break;
             case Monitor:
-                if(mButtonRefresh.isChecked())
+                if(mButtonRefresh.isChecked() && !mButtonSwitchInput.isChecked())
                 {
-
-                    if(ReadMonitorValues(detectedTag))
+                    if(ReadMonitorValues2(detectedTag))
+                    //if(ReadMonitorValues(detectedTag))
                     {
                         Toast.makeText(this, "Read Monitor Value", Toast.LENGTH_SHORT).show();
                         swapMonitorView();
@@ -646,9 +858,34 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             default:
+                if(isForceToTurnOn)
+                {
+                    Toast.makeText(this, "tag : Run !", Toast.LENGTH_SHORT).show();
+                    if(WriteRun(detectedTag))
+                    {
+                        Toast.makeText(this, "Run control set!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else
+                {
+                    Toast.makeText(this, "Tag : Stop!", Toast.LENGTH_SHORT).show();
+                    if(WriteStop(detectedTag))
+                    {
+                        Toast.makeText(this, "Stop control set!", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
                 break;
         }
         vibrateEnd();
+    }
+
+    private boolean WriteStop(Tag detectedTag) {
+        return NfcVComm.writeRun(detectedTag, false);
+    }
+
+    private boolean WriteRun(Tag detectedTag) {
+        return NfcVComm.writeRun(detectedTag, true);
     }
 
 
@@ -726,6 +963,7 @@ public class MainActivity extends AppCompatActivity {
 
         TabWidget tw = (TabWidget)tabHost1.findViewById(android.R.id.tabs);
 
+
         //spinners = new Spinner[dataContainer.MAX_IDX];
 
         //Log.d("onCreate", "toggleButtons = "+toggleButtons[0]);
@@ -736,11 +974,10 @@ public class MainActivity extends AppCompatActivity {
         for (int i=0; i<dataContainer.MAX_IDX ; i++)
         {
             String tabName = dataContainer.getSubList(i).getName();
-            String result = tabName.charAt(0) + "."  + tabName.charAt(tabName.length()/2) + tabName.charAt(tabName.length()-1);
-            ts[i].setIndicator(result) ;
+            //String result = tabName.charAt(0) + "."  + tabName.charAt(tabName.length()/2) + tabName.charAt(tabName.length()-1);
+            ts[i].setIndicator(tabName ) ;
+
             tabHost1.addTab(ts[i]);
-
-
             TextView tv = (TextView)tw.getChildTabViewAt(i).findViewById(android.R.id.title);
             tv.setTextSize(12);
 
@@ -748,8 +985,8 @@ public class MainActivity extends AppCompatActivity {
 
         tabHost1.setVisibility(View.INVISIBLE);
 
-        mProgressbar = (ProgressBar)findViewById(R.id.progressBar);
-        mProgressbar.setVisibility(View.INVISIBLE);
+        //mProgressbar = (ProgressBar)findViewById(R.id.progressBar);
+        //mProgressbar.setVisibility(View.INVISIBLE);
         refreshFromUI();
     }
 
@@ -770,12 +1007,9 @@ public class MainActivity extends AppCompatActivity {
         int file= View.INVISIBLE;
         int edit= View.INVISIBLE;
         int monitor = View.INVISIBLE;
+        int summary = View.INVISIBLE;
         switch(menuID)
         {
-
-            case R.id.menuItemSettings:
-                settings = View.VISIBLE;
-                break;
             case R.id.menuItemParamSet:
                 file = View.VISIBLE;
                 break;
@@ -793,21 +1027,52 @@ public class MainActivity extends AppCompatActivity {
                     rwMode = RWMode.Mode.Default;
                 }
                 break;
-
+            case R.id.menuItemFinish:
+                finish();
+                break;
+            case R.id.menuItemSummary:
+                summary = View.VISIBLE;
+                rwMode = RWMode.Mode.Summary;
+                break;
             default:
                 rwMode = RWMode.Mode.Default;
                 break;
         }
         tabHost1.setVisibility(edit);
-        mProgressbar.setVisibility(edit);
+        //mProgressbar.setVisibility(edit);
 
         mRViewSettings.setVisibility(settings);
 
         mRViewFiles.setVisibility(file);
 
         mRViewMonitor.setVisibility(monitor);
+
         mButtonRefresh.setVisibility(monitor);
+        mButtonSwitchInput.setVisibility(monitor);
+        if(rwMode != RWMode.Mode.Monitor)
+        {
+            mButtonRefresh.setChecked(false);
+            mButtonSwitchInput.setChecked(false);
+        }
+        /*
+        if(mButtonRefresh.isChecked())
+        {
+            mButtonRefresh.callOnClick();
+        }
+
+
+        if(mButtonSwitchInput.isChecked()) {
+            mButtonSwitchInput.callOnClick();
+        }
+        */
+        setSummaryUIVisible(summary);
+
+
+
+
+
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -837,8 +1102,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void swapMonitorView()
     {
+        int statusInverterIDX = ParamTable.getTableIdx(ParamTable.Param_table.statusinverter);
         List<String> names = dataContainer.getSubList(ParamTable.Param_table.statusinverter).getNameList();
-        List<String> values = dataContainer.getSubList(ParamTable.Param_table.statusinverter).getValueList();
+        List<String> values = dataContainer.getValueList(statusInverterIDX) ;
+                //dataContainer.getSubList(ParamTable.Param_table.statusinverter).getValueList();
         mAdapterMonitors = new RecyclerViewAdapter_monitor(names, values);
         mRViewMonitor.swapAdapter(mAdapterMonitors, false);
     }
@@ -943,6 +1210,8 @@ public class MainActivity extends AppCompatActivity {
             dataContainer.save(me, inputText);
             dataContainer.load(me, inputText);
             MainActivity.setFileName(inputText);
+
+            me.mAdapterFilse.updateSelection(inputText);
             me.swapFileListView();
 
             }
@@ -1041,17 +1310,11 @@ public class MainActivity extends AppCompatActivity {
     {
 
         dataContainer.mFileName = fileName;
+        me.updateSelectedFileName(fileName);
         //Toast.makeText(me, fileName, Toast.LENGTH_SHORT).show();
     }
 
-    int progressValue = 0;
-    public void updateProgressValue(int i) {
-        progressValue = i;
-    }
 
-    ToggleButton mButtonRead;
-    ToggleButton mButtonWrite;
-    ToggleButton mButtonHotfix;
 
     public void setToggleButtonUI(){
         mButtonRead = findViewById(R.id.toggleButtonRead);
@@ -1155,30 +1418,8 @@ public class MainActivity extends AppCompatActivity {
         isItemSelectable = enable;
     }
 
-    ProgressBar bar;
-    int currProgressValue;
-    boolean onProgress;
 
 
-    public void runProgressBar(final int init, final int max)
-    {
-
-        Thread t = new Thread()
-        {
-            @Override
-            public void run() {
-                super.run();
-                onProgress = true;
-                currProgressValue = 0;
-                while(onProgress)
-                {
-                    bar.setProgress(currProgressValue);
-                    onProgress = (currProgressValue==max);
-                }
-            }
-        };
-        t.start();
-    }
 
     public void callSwapMoniterView() {
 
@@ -1208,4 +1449,10 @@ public class MainActivity extends AppCompatActivity {
     private void setMonirotValue() {
 
     }
+
+    public DataContainer getDataContainer() {
+        return dataContainer;
+    }
+
+
 }

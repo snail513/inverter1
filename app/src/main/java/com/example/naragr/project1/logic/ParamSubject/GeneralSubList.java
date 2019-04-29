@@ -6,6 +6,7 @@ import com.example.naragr.project1.logic.ParamTable.Bool_t;
 import com.example.naragr.project1.logic.ParamTable.DataDB;
 import com.example.naragr.project1.logic.ParamTable.ParamTable;
 import com.example.naragr.project1.logic.ParamTable.Param_idx;
+import com.example.naragr.project1.logic.ParamTable.Parameter;
 import com.example.naragr.project1.logic.ParamTable.RotDir3_t;
 
 import java.util.ArrayList;
@@ -54,10 +55,10 @@ public class GeneralSubList extends SubList {
 
         for(int i = 0; i<subjectCount;i++)
         {
-            ParamTable.Parameter detail = DataDB.getInstance().table[i+subjectHead];
+            Parameter detail = DataDB.getInstance().table[i+subjectHead];
             int addr = i+subjectHead;
             DataDB.getDBInstance().setValue(addr, detail.initVal);
-            names.add(""+Param_idx.values()[addr]);
+            names.add(ParamTable.getName(Param_idx.values()[addr]));
             System.out.println("[" + addr + "] detail.initVal" + detail.initVal);
 
         }
@@ -66,7 +67,8 @@ public class GeneralSubList extends SubList {
 
     @Override
     public String getName() {
-        return ""+table;
+
+        return ParamTable.getTableName(table);
     }
 
     @Override

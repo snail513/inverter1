@@ -31,7 +31,7 @@ public class DataDB {
         rangedSize=0;
         for(int i=0; i<tableInstance.table.length;i++)
         {
-            ParamTable.Parameter param = tableInstance.table[i];
+            Parameter param = tableInstance.table[i];
             if(param.isRanged)
             {
                 datas[i] = param.initVal;
@@ -72,7 +72,7 @@ public class DataDB {
         else if(idx==Param_idx.direction_control.ordinal())
         {
 
-            int direction = datas[Param_idx.direction.ordinal()];
+            int direction = datas[Param_idx.direction_domain.ordinal()];
             if(direction == 0) {
                 minValue = 0;
                 maxValue = 1;
@@ -111,21 +111,23 @@ public class DataDB {
             minValue = datas[Param_idx.v_in_min_freq.ordinal()];
             maxValue = tableInstance.table[idx].maxVal;
         }
-        else if(idx == Param_idx.i_in_max_freq.ordinal())
+        /*else if(idx == Param_idx.i_in_max_freq.ordinal())
         {
             minValue = datas[Param_idx.i_in_min_freq.ordinal()];
             maxValue = tableInstance.table[idx].maxVal;
-        }
+        }*/
         else if(idx == Param_idx.v_in_max.ordinal())
         {
             minValue = datas[Param_idx.v_in_min.ordinal()];
             maxValue = tableInstance.table[idx].maxVal;
         }
+        /*
         else if(idx == Param_idx.i_in_max.ordinal())
         {
             minValue = datas[Param_idx.i_in_min.ordinal()];
             maxValue = tableInstance.table[idx].maxVal;
         }
+        */
 ///////////////
 
         else if(idx == Param_idx.jmp_low0.ordinal())
@@ -151,22 +153,25 @@ public class DataDB {
             minValue = tableInstance.table[idx].minVal;
             maxValue = datas[Param_idx.v_in_max_freq.ordinal()];
         }
+        /*
         else if(idx == Param_idx.i_in_min_freq.ordinal())
         {
             minValue = tableInstance.table[idx].minVal;
             maxValue = datas[Param_idx.i_in_max_freq.ordinal()];
         }
+        */
         else if(idx == Param_idx.v_in_min.ordinal())
         {
             minValue = tableInstance.table[idx].minVal;
             maxValue = datas[Param_idx.v_in_max.ordinal()];
         }
+        /*
         else if(idx == Param_idx.i_in_min.ordinal())
         {
             minValue = tableInstance.table[idx].minVal;
             maxValue = datas[Param_idx.i_in_max.ordinal()];
         }
-
+*/
         else
         {
             minValue = tableInstance.table[idx].minVal;
@@ -220,6 +225,12 @@ public class DataDB {
                     intValue = (int)value;
                     break;
                 case ParamTable.STOP_T:
+                    intValue = (int)value;
+                    break;
+                case ParamTable.BAUD_T:
+                    intValue = (int)value;
+                    break;
+                case ParamTable.MOTOR_TM_T:
                     intValue = (int)value;
                     break;
                 default :
@@ -288,6 +299,12 @@ public class DataDB {
                     break;
                 case ParamTable.STOP_T:
                     value = Stop_t.get((byte)datas[idx]);
+                    break;
+                case ParamTable.BAUD_T:
+                    value = Baud_t.get((byte)datas[idx]);
+                    break;
+                case ParamTable.MOTOR_TM_T:
+                    value = MotorTemp_t.get((byte)datas[idx]);
                     break;
                 default :
                     value = null;

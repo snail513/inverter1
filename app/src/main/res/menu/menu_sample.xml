@@ -2,9 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group >
+        <!--
         <item
             android:id="@+id/menuItemSettings"
             android:title="앱 설정" />
+        -->
         <item
             android:id="@+id/menuItemParamSet"
             android:title="파일 관리" />
@@ -14,5 +16,12 @@
         <item
             android:id="@+id/menuItemMonitor"
             android:title="모니터링" />
+        <item
+            android:id="@+id/menuItemSummary"
+            android:title="기본화면" />
+
+        <item
+            android:id="@+id/menuItemFinish"
+            android:title="종료" />
     </group>
 </menu>

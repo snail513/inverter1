@@ -16,9 +16,44 @@ import java.util.HashSet;
 import java.util.logging.Handler;
 
 public class NfcVComm {
-    NfcV nfcV;
 
     //flag
+    enum SYSTEM_PARAM{
+        SYSTEM_PARAM_NFC_TAGGED,
+        SYSTEM_PARAM_CRC_VALUE,
+        SYSTEM_PARAM_IS_INITIATED,
+        SYSTEM_PARAM_HAS_SYSTEM_ERROR,
+        SYSTEM_PARAM_ENABLE_NFC_WRITER,
+        SYSTEM_PARAM_NFC_TRYED,
+        SYSTEM_PARAM_ON_MONITORING,
+        SYSTEM_PARAM_IDLE0_RUN1_STOP2
+    };
+
+    static int getSystemParamAddress (SYSTEM_PARAM param)
+    {
+
+        switch(param)
+        {
+            case SYSTEM_PARAM_NFC_TAGGED:
+                return 100;
+            case SYSTEM_PARAM_CRC_VALUE:
+                return 101;
+            case SYSTEM_PARAM_IS_INITIATED:
+                return 102;
+            case SYSTEM_PARAM_HAS_SYSTEM_ERROR:
+                return 103;
+            case SYSTEM_PARAM_ENABLE_NFC_WRITER:
+                return 104;
+            case SYSTEM_PARAM_NFC_TRYED:
+                return 105;
+            case SYSTEM_PARAM_ON_MONITORING:
+                return 106;
+            case SYSTEM_PARAM_IDLE0_RUN1_STOP2:
+                return 107;
+            default:
+                return 0;
+        }
+    }
 
     //cmd
     final static byte CMD_READ_SINGLE_BLOCK = 0x20;
@@ -44,6 +79,8 @@ public class NfcVComm {
     final static byte ERR_block_not_locked = 0x14;
     final static byte ERR_block_read_protected = 0x15;
 
+    final static int ADDR_WRITE_START_FLAG = 105;
+    final static int ADDR_WRITE_END_FLAG = 100;
 
     static String getErrString(byte errorCode)
     {
@@ -61,6 +98,143 @@ public class NfcVComm {
         }
     }
 
+    public static byte[] readTagMultiBlockForMonitoring(Tag tag, short address, byte size)
+        /* When ths byte size is n, read n+1 blocks. */
+    {
+        byte[] response=null;
+        NfcV ndef = NfcV.get(tag);
+
+        byte[] tagUid = ndef.getTag().getId();
+        Log.d("ReadMonitor", "tagUid = " + MainActivity.byteArrayToHexString(tagUid));
+
+
+        if (ndef != null) {
+
+            try {
+                if(ndef.isConnected())
+                {
+                    ndef.close();
+                }
+                ndef.connect();
+                int blockAddress = 0;
+
+                Log.d("ReadMonitor", "writeOnMonitoringFlag");
+                writeOnMonitoringFlag(ndef);
+                Log.d("ReadMonitor", "writeOnMonitoringFlag end");
+                byte[] cmd = new byte[]{
+                        (byte) 0x0A,
+                        CMD_READ_MULTI_BLOCK,
+                        (byte)(address&0x0FF),(byte)((address>>8)&0x0FF),
+                        size
+                };
+                //Log.d("NFCV", "readTagMultiBlock preencoded request addr= " + address);
+                //Log.d("NFCV", "readTagMultiBlock request = " + MainActivity.byteArrayToHexString(cmd));
+                response = ndef.transceive(cmd);
+
+                ndef.close();
+                //Log.d("NFCV", "readTagMultiBlock response = " + MainActivity.byteArrayToHexString(response));
+                if(response[0] ==0x01)
+                {
+                    Log.d("ReadMonitor", "readTagMultiBlock result = ERROR response");
+                    return null;
+                }
+                else
+                {
+
+                    byte[] result = new byte[response.length-1];
+                    System.arraycopy(response, 1, result, 0, response.length-1);
+                    Log.d("ReadMonitor", "readTagMultiBlock result = " + MainActivity.byteArrayToHexString(result));
+                    return result;
+                }
+            } catch (Exception e) {
+                Log.d("ReadMonitor", "error, request = " + MainActivity.byteArrayToHexString(response));
+                e.printStackTrace();
+            }
+            return null;
+        } else {
+            Log.d("ReadMonitor", "readTagMultiBlock NDEF is null!");
+            return null;
+        }
+    }
+
+    public static boolean readTagMultiBlockForMonitoringContinue(NfcV ndef, short address, byte size, DataContainer dataContainer)
+        /* When ths byte size is n, read n+1 blocks. */
+    {
+        byte[] response=null;
+        int statusInverterIdx = ParamTable.getTableIdx(ParamTable.Param_table.statusinverter);
+        byte[] tagUid = ndef.getTag().getId();
+        Log.d("ReadMonitor", "tagUid = " + MainActivity.byteArrayToHexString(tagUid));
+
+
+        if (ndef != null) {
+
+            try {
+                int blockAddress = 0;
+
+                Log.d("ReadMonitor", "writeOnMonitoringFlag");
+                writeOnMonitoringFlag(ndef);
+                Log.d("ReadMonitor", "writeOnMonitoringFlag end");
+                byte[] cmd = new byte[]{
+                        (byte) 0x0A,
+                        CMD_READ_MULTI_BLOCK,
+                        (byte)(address&0x0FF),(byte)((address>>8)&0x0FF),
+                        size
+                };
+                //Log.d("NFCV", "readTagMultiBlock preencoded request addr= " + address);
+                //Log.d("NFCV", "readTagMultiBlock request = " + MainActivity.byteArrayToHexString(cmd));
+                response = ndef.transceive(cmd);
+                //Log.d("NFCV", "readTagMultiBlock response = " + MainActivity.byteArrayToHexString(response));
+                if(response[0] ==0x01)
+                {
+                    Log.d("ReadMonitor", "readTagMultiBlock result = ERROR response");
+                    return false;
+                }
+                else
+                {
+
+                    byte[] result = new byte[response.length-1];
+                    System.arraycopy(response, 1, result, 0, response.length-1);
+                    Log.d("ReadMonitor", "readTagMultiBlock result = " + MainActivity.byteArrayToHexString(result));
+                    if(result !=null)
+                    {
+                        byte[] block = new byte[4];
+                        for(int j=0; j<size; j++)
+                        {
+
+                            block[3] = result[j*4 + 0];
+                            block[2] = result[j*4 + 1];
+                            block[1] = result[j*4 + 2];
+                            block[0] = result[j*4 + 3];
+
+                            //System.arraycopy(result, j*4, block, 0, 4);
+                            //Log.d("MonitorThread" , "Read IO");
+                            //int statusInverterIdx = ParamTable.getTableIdx(ParamTable.Param_table.statusinverter);
+                            int varIdx = DataContainer.getVarIdx(statusInverterIdx, j);
+                            dataContainer.setValue(varIdx, block);
+
+                        }
+                    }
+                    else
+                    {
+                        Log.d("ReadTab", "[ERROR] tab[" + statusInverterIdx + "], result= null");
+                        //Toast.makeText(this, "[ReadTab ERROR]"+idx +  "result= null", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+
+                    Log.d("ReadTab", "setValue = "+ dataContainer.toString());
+                    return true;
+                }
+            } catch (Exception e) {
+                //Log.d("ReadMonitor", "error, request = " + e.);
+                Log.d("ReadMonitor", "error, request = " + e.getMessage());
+                //e.printStackTrace();
+            }
+            return false;
+        } else {
+            Log.d("ReadMonitor", "readTagMultiBlock NDEF is null!");
+            return false;
+        }
+    }
 
     public static byte[] readTagMultiBlock(Tag tag, short address, byte size)
             /* When ths byte size is n, read n+1 blocks. */
@@ -416,8 +590,38 @@ public class NfcVComm {
     private static boolean writeStartFlag(NfcV ndef ) throws IOException {
 
         byte[] response = null;
-        int isWriteAddr = 105;
+        int isWriteAddr = getSystemParamAddress(SYSTEM_PARAM.SYSTEM_PARAM_NFC_TRYED);
         int isWrite = 1;
+        byte[] cmd_isWrite = new byte[]{
+                (byte) 0x0A,
+                CMD_WRITE_SINGLE_BLOCK,
+                (byte) (isWriteAddr & 0x0FF), (byte) ((isWriteAddr >> 8) & 0x0FF),
+                (byte) (isWrite >> 0 & 0x0FF), (byte) ((isWrite >> 8) & 0x0FF), (byte) ((isWrite >> 16) & 0x0FF), (byte) ((isWrite >> 24) & 0x0FF),
+        };
+        response = ndef.transceive(cmd_isWrite);
+        if(response[0] ==0x01)
+        {
+            Log.d("NFCV", "readTagMultiBlock result = ERROR response");
+            return false;
+        }
+        else
+        {
+            //Log.d("NFCV", "Write block "+ i +" success!");
+            return true;
+        }
+
+    }
+
+    private static boolean writeRunFlag(NfcV ndef, boolean isRun) throws IOException {
+
+        byte[] response = null;
+        int isWriteAddr = getSystemParamAddress(SYSTEM_PARAM.SYSTEM_PARAM_IDLE0_RUN1_STOP2);
+        int isWrite = 0;
+        if(isRun)
+            isWrite = 1;
+        else
+            isWrite = 2;
+
         byte[] cmd_isWrite = new byte[]{
                 (byte) 0x0A,
                 CMD_WRITE_SINGLE_BLOCK,
@@ -439,11 +643,43 @@ public class NfcVComm {
 
     }
 
+    public static boolean writeOnMonitoringFlag(NfcV ndef ) throws IOException {
+
+        byte[] response = null;
+        int isWriteAddr = getSystemParamAddress (SYSTEM_PARAM.SYSTEM_PARAM_ON_MONITORING);
+        int isWrite = 1;
+        byte[] cmd_isWrite = new byte[]{
+                (byte) 0x0A,
+                CMD_WRITE_SINGLE_BLOCK,
+                (byte) (isWriteAddr & 0x0FF), (byte) ((isWriteAddr >> 8) & 0x0FF),
+                (byte) (isWrite >> 0 & 0x0FF), (byte) ((isWrite >> 8) & 0x0FF), (byte) ((isWrite >> 16) & 0x0FF), (byte) ((isWrite >> 24) & 0x0FF),
+        };
+        response = ndef.transceive(cmd_isWrite);
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Log.d("NFCV", "Write Monitor flag result = ERROR / sleep");
+            return false;
+        }
+        if(response[0] ==0x01)
+        {
+            Log.d("NFCV", "Write Monitor flag result = ERROR / response");
+
+            return false;
+        }
+        else
+        {
+            Log.d("NFCV", "Write Monitor flag success! addr = " + isWriteAddr);
+            return true;
+        }
+    }
 
     private static boolean writeEndFlag(NfcV ndef ) throws IOException {
 
         byte[] response = null;
-        int isWriteAddr = 100;
+        //int isWriteAddr = 100;
+        int isWriteAddr = getSystemParamAddress (SYSTEM_PARAM.SYSTEM_PARAM_NFC_TAGGED);
         int isWrite = 1;
         byte[] cmd_isWrite = new byte[]{
                 (byte) 0x0A,
@@ -543,6 +779,46 @@ public class NfcVComm {
         return true;
     }
 
+    public static boolean writeRun(final Tag tag, boolean isRun)
+    {
+        NfcV ndef = NfcV.get(tag);
+
+        String s = "";
+        byte[] tagUid = ndef.getTag().getId();
+        Log.d("NFCV.writeTag", "NFCV.call writeTag");
+
+        byte[] response=null;
+        short i=0;
+        try {
+
+
+            if(ndef.isConnected())
+            {
+                ndef.close();
+                while(ndef.isConnected())
+                {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                }
+            }
+
+
+            ndef.connect();
+            writeRunFlag(ndef, isRun);
+            ndef.close();
+
+
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
     public static boolean writeTag(final Tag tag, final int[] blocks)
         /* When ths byte size is n, read n+1 blocks. */
@@ -654,18 +930,11 @@ public class NfcVComm {
             boolean result = writeTag(detectedTag, blocks);
             return result;
         }
-        /*
-        else
-        {
-            Log.d("WriteTagAll", "Reading NFC_STATE is failed!");
-            return false;
-        }
-        */
 
     }
 
 
-    public static enum NFCV_CMD{
+    public enum NFCV_CMD{
         CMD_READ_SINGLE_BLOCK,
         CMD_WRITE_SINGLE_BLOCK,
         CMD_LOCK_BLOCK,

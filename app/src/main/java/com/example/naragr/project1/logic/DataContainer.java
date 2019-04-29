@@ -13,6 +13,7 @@ import com.example.naragr.project1.logic.ParamTable.Freq_t;
 import com.example.naragr.project1.logic.ParamTable.InputComm_t;
 import com.example.naragr.project1.logic.ParamTable.ParamTable;
 import com.example.naragr.project1.logic.ParamTable.Param_idx;
+import com.example.naragr.project1.logic.ParamTable.Parameter;
 import com.example.naragr.project1.logic.ParamTable.RotDir2_t;
 import com.example.naragr.project1.logic.ParamTable.RotDir3_t;
 import com.example.naragr.project1.logic.ParamTable.RunComm_t;
@@ -119,7 +120,7 @@ public class DataContainer implements Serializable{
             {
 
                 float fvalue = (float)o;
-                fvalue/=10;
+                fvalue/=10.f;
                 Log.d("getValueList", "fvalue : " + fvalue);
                 result.add(""+fvalue);
             }
@@ -543,7 +544,7 @@ public class DataContainer implements Serializable{
         {
             return;
         }
-        ParamTable.Parameter p =  DataDB.getInstance().table[varIdx];
+        Parameter p =  DataDB.getInstance().table[varIdx];
         int var;
         if(p.data_type == ParamTable.FLOAT_T)
         {
@@ -724,7 +725,7 @@ public class DataContainer implements Serializable{
         {
             return new byte[]{0,0,0,0};
         }
-        ParamTable.Parameter p =  DataDB.getInstance().table[varIdx];
+        //ParamTable.Parameter p =  DataDB.getInstance().table[varIdx];
 
         return DataDB.getDBInstance().getValue(varIdx);
         /*

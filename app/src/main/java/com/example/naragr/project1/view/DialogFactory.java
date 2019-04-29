@@ -20,6 +20,7 @@ public class DialogFactory {
         String fileButton = "파일 관리";
         String paramButton = "파라미터 작업";
         String monitorButton = "모니터링";
+        //String runButton = "모터제어";
         MainActivity me = MainActivity.me;
         AlertDialog.Builder builder = new AlertDialog.Builder(me);
         builder.setTitle(title);
@@ -54,6 +55,7 @@ public class DialogFactory {
                         dialog.cancel();
                     }
                 });
+
         builder.create().show();
     }
 }

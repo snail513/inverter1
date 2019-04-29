@@ -34,7 +34,7 @@ public class FileItemView extends LinearLayout {
         addView(v);
 
         mTextView = (TextView) findViewById(R.id.textViewName);
-        mTextView.setTextSize(15);
+        mTextView.setTextSize(20);
 
         mBtDelete = (Button)findViewById(R.id.buttonDelete);
         mBtEdit = (Button)findViewById(R.id.buttonEdit);

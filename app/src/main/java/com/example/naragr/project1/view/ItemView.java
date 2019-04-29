@@ -17,23 +17,31 @@ public class ItemView extends LinearLayout {
     protected TextView mTextView;
     protected TextView mTextViewValue;
     protected String lastString;
-    protected ToggleButton toggleButton;
     public int itemIdx;
     public int listIdx;
 
-    public ItemView(Context context) {
+    private ItemView(Context context)
+    {
+        super(context);
+    }
+
+    public ItemView(Context context, boolean isClickable) {
 
         super(context);
         init();
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                lastString = mTextViewValue.getText().toString();
-                Log.d("ItemView", "Click IDx "+  DataContainer.getVarIdx(listIdx, itemIdx));
-                MainActivity.showItemValueChangeDialog(mTextView.getText().toString(), DataContainer.getVarIdx(listIdx, itemIdx), mTextViewValue.getText().toString());
+        if(isClickable)
+        {
+            setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    lastString = mTextViewValue.getText().toString();
+                    Log.d("ItemView", "Click IDx " + DataContainer.getVarIdx(listIdx, itemIdx));
+                    MainActivity.showItemValueChangeDialog(mTextView.getText().toString(), DataContainer.getVarIdx(listIdx, itemIdx), mTextViewValue.getText().toString());
 
-            }
-        });
+                }
+            });
+        }
+
 
     }
 

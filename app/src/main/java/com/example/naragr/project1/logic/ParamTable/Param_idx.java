@@ -25,17 +25,14 @@ public enum Param_idx {
     jmp_high0,
     jmp_high1,
     jmp_high2,
-    direction,
-
-
+    direction_domain,
+    acc_base_set_type,
 
     ctrl_in,
-    vf_foc_sel,
     energy_save,
     pwm_freq,
-    v_boost,
-    foc_torque_limit,
-    brake,
+    //foc_torque_limit,
+    brake_type,
     brake_freq,
     dci_brake_freq,
     dci_brake_block_time,
@@ -49,11 +46,9 @@ public enum Param_idx {
     ovl_enable,
     ovl_trip_limit,
     ovl_trip_duration,
-    regen_resistance,
-    regen_thermal,
-    regen_power,
+    regen_duty,
     regen_band,
-    pan_onoff,
+    fan_onoff,
 
 
 
@@ -61,19 +56,16 @@ public enum Param_idx {
     multi_Din_1,
     multi_Din_2,
     multi_Din_3,
-    multi_Din_4,
-    multi_Dout,
-    multi_din_cnt,
+    multi_Dout_0,
+    multi_Dout_1,
     v_in_min,
     v_in_min_freq,
     v_in_max,
     v_in_max_freq,
-    i_in_min,
-    i_in_min_freq,
-    i_in_max,
-    i_in_max_freq,
-    aout,
+    aout_type,
     aout_rate,
+    mb_address,
+    baudrate,
 
 
 
@@ -90,20 +82,9 @@ public enum Param_idx {
 
 
     model,
-    modbus_addr,
-    motor,
-    gear,
+    //modbus_addr,
+    motor_type,
     gear_ratio,
-
-
-
-    run_status,
-    dir_status,
-    I_rms,
-    run_freq,
-    dc_voltage,
-    ipm_temperature,
-    motor_temperature,
     motor_on_count,
     elapsed_hour,
     operating_hour,
@@ -111,35 +92,43 @@ public enum Param_idx {
 
 
     err_date_0,
-    err_time_0,
     err_code_0,
     err_status_0,
     err_current_0,
     err_freq_0,
     err_date_1,
-    err_time_1,
     err_code_1,
     err_status_1,
     err_current_1,
     err_freq_1,
     err_date_2,
-    err_time_2,
     err_code_2,
     err_status_2,
     err_current_2,
     err_freq_2,
     err_date_3,
-    err_time_3,
     err_code_3,
     err_status_3,
     err_current_3,
     err_freq_3,
     err_date_4,
-    err_time_4,
     err_code_4,
     err_status_4,
     err_current_4,
     err_freq_4,
+
+
+
+
+
+
+    run_status,
+    I_rms,
+    run_freq,
+    dc_voltage,
+    ipm_temperature,
+    motor_temperature,
+
 
 
 };

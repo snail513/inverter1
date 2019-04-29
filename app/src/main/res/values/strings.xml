@@ -16,4 +16,9 @@
     <string name="monitor_elapsed_hour">누적모터구동시간</string>
     <string name="monitor_opterating_hour">누적인버터동작시간</string>
     <string name="monitor_refresh_button">모니터링</string>
+    <string name="motor_target_value">설정</string>
+    <string name="motor_curr_value">운전</string>
+    <string name="motor_curr_dir">방향</string>
+    <string name="motor_value_float_point">.</string>
+
 </resources>

@@ -3,6 +3,7 @@ package com.example.naragr.project1.view;
 import android.graphics.Color;
 import android.nfc.Tag;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import com.example.naragr.project1.logic.DataContainer;
 import com.example.naragr.project1.logic.ParamTable.ParamTable;
@@ -11,14 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerViewAdapter_monitor extends RecyclerViewAdapter {
-    private boolean isRefreshing = false;
-
-    public void onSwitchButton()
-    {
-        isRefreshing=!isRefreshing;
-
-    }
-
 
     public RecyclerViewAdapter_monitor(List<String> name, List<String> value) {
         super.listItemView = new ArrayList<>();
@@ -50,5 +43,15 @@ public class RecyclerViewAdapter_monitor extends RecyclerViewAdapter {
         {
             //Log.d()
         }
+    }
+
+    @Override
+    public RecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    {
+        // create a new view
+        ItemView itemView = new ItemView(parent.getContext(), false);
+
+        ViewHolder vh = new ViewHolder(itemView);
+        return vh;
     }
 }

@@ -20,7 +20,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     protected List<String> mDataValue;
     private int listIndex;
 
-    protected List<ItemView> listItemView;
+    public List<ItemView> listItemView;
 
     public RecyclerViewAdapter() {
     }
@@ -52,13 +52,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     // Create new views (invoked by the layout manager)
     @Override
-    public RecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
+    public RecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,int viewType)
+    {
         // create a new view
-        ItemView itemView = new ItemView(parent.getContext());
+        if(listIndex <4) {
+            ItemView itemView = new ItemView(parent.getContext(), true);
+            itemView.setBackgroundColor(Color.GREEN);
+            ViewHolder vh = new ViewHolder(itemView);
+            return vh;
+        }
+        else
+        {
+            ItemView itemView = new ItemView(parent.getContext(), false);
+            ViewHolder vh = new ViewHolder(itemView);
+            return vh;
+        }
 
-        ViewHolder vh = new ViewHolder(itemView);
-        return vh;
     }
 
     // Replace the contents of a view (invoked by the layout manager)

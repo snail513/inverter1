@@ -2,13 +2,14 @@ package com.example.naragr.project1.logic;
 
 import android.nfc.Tag;
 import android.nfc.tech.NfcV;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.example.naragr.project1.logic.ParamTable.ParamTable;
 import com.example.naragr.project1.view.MainActivity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 public class MonitorThread extends Thread {
     //private List<String> valueList = new ArrayList<>();
@@ -17,6 +18,18 @@ public class MonitorThread extends Thread {
     private DataContainer dataContainer;
     private Tag tag = null;
     private MainActivity mParent;
+    private Runnable poster = new Runnable() {
+        @Override
+        public void run() {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mParent.swapMonitorView();
+                }
+            });
+        }
+    };
 
     public void Quit()
     {
@@ -37,27 +50,7 @@ public class MonitorThread extends Thread {
     public void run() {
         super.run();
         Log.d("MonitorThread" , "Enter thread");
-        while(!isQuit)
-        {
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if(tag!=null) {
-
-                ReadMonitoringData(tag);
-                mParent.callSwapMoniterView();
-                Log.d("MonitorThread" , "tagging and updating");
-
-            }
-            else
-            {
-                Log.d("MonitorThread" , "Not tagging");
-            }
-
-        }
+        ReadMonitoringData(tag);
         Log.d("MonitorThread" , "Quit thread");
 
     }
@@ -67,41 +60,41 @@ public class MonitorThread extends Thread {
         if(detectedTag ==null)
             return false;
 
-
         int statusInverterIdx = ParamTable.getTableIdx(ParamTable.Param_table.statusinverter);
         byte blockSize = (byte)dataContainer.getSubList(statusInverterIdx).getTotalBlockSize();
         short headPos = (short)dataContainer.getSubList(statusInverterIdx).getDefaultAddress();
         Log.d("MonitorThread", "tabIdx = " + statusInverterIdx + ", block size = " + blockSize + ", headPos = " + headPos);
-        byte[] result = NfcVComm.readTagMultiBlock(detectedTag, headPos, blockSize);
 
-        if(result !=null)
-        {
-            byte[] block = new byte[4];
-            for(int j=0; j<blockSize; j++)
+        NfcV nfcv = NfcV.get(tag);
+        try {
+            nfcv.connect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        boolean isContinue = true;
+        while(isContinue){
+
+            if(isQuit)
             {
-
-                block[3] = result[j*4 + 0];
-                block[2] = result[j*4 + 1];
-                block[1] = result[j*4 + 2];
-                block[0] = result[j*4 + 3];
-
-                //System.arraycopy(result, j*4, block, 0, 4);
-                Log.d("MonitorThread" , "Read IO");
-                int varIdx = DataContainer.getVarIdx(statusInverterIdx, j);
-                dataContainer.setValue(varIdx, block);
+                break;
             }
-            //Toast.makeText(this, "[ReadTab SUCCESS]"+idx +  "result= null", Toast.LENGTH_SHORT).show();
-
+            isContinue = NfcVComm.readTagMultiBlockForMonitoringContinue(nfcv, headPos, blockSize, dataContainer);
+            if(isContinue) {
+                mParent.callSwapMoniterView();
+            }
+            Thread t = new Thread(poster);
+            t.start();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-
-        else
-        {
-            Log.d("ReadTab", "[ERROR] tab[" + statusInverterIdx + "], result= null");
-            //Toast.makeText(this, "[ReadTab ERROR]"+idx +  "result= null", Toast.LENGTH_SHORT).show();
-            return false;
+        try {
+            nfcv.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        Log.d("ReadTab", "setValue = "+ dataContainer.toString());
         return true;
     }
 }
