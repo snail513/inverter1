@@ -690,15 +690,28 @@ public class NfcVComm {
         response = ndef.transceive(cmd_isWrite);
         if(response[0] ==0x01)
         {
-            Log.d("NFCV", "readTagMultiBlock result = ERROR response");
+            Log.d("NFCV", "readTagMultiBlock result = ERROR [END Flag]response");
 
             return false;
         }
-        else
+
+        response = null;
+        int crcAddr = getSystemParamAddress (SYSTEM_PARAM.SYSTEM_PARAM_CRC_VALUE);
+        int CrcValue = MainActivity.dataContainer.getTableCRC();
+        cmd_isWrite = new byte[]{
+                (byte) 0x0A,
+                CMD_WRITE_SINGLE_BLOCK,
+                (byte) (crcAddr & 0x0FF), (byte) ((crcAddr >> 8) & 0x0FF),
+                (byte) (CrcValue >> 0 & 0x0FF), (byte) ((CrcValue >> 8) & 0x0FF), (byte) ((CrcValue >> 16) & 0x0FF), (byte) ((CrcValue >> 24) & 0x0FF),
+        };
+        response = ndef.transceive(cmd_isWrite);
+        if(response[0] ==0x01)
         {
-            //Log.d("NFCV", "Write block "+ i +" success!");
-            return true;
+            Log.d("NFCV", "readTagMultiBlock result = ERROR [CRC value]response");
+
+            return false;
         }
+        return true;
 
     }
 

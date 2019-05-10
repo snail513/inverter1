@@ -76,12 +76,10 @@ public class GeneralSubList extends SubList {
         //return ParamTable.getSubjectHead(table)*4;
         return headAddr;
     }
-
+/*
     public HashMap<String, Object> getHashMap()
     {
         HashMap<String, Object> r = new HashMap<String, Object>();
-        int headAddr = ParamTable.getSubjectHead(table);
-        int count = ParamTable.getSubjectCount(table);
 
         List<String> value = getValueList();
 
@@ -90,7 +88,7 @@ public class GeneralSubList extends SubList {
         }
         return r;
     }
-
+*/
     public List<Pair<String, Object>> getList()
     {
         List<Pair<String, Object>> list = new ArrayList<>();

@@ -32,13 +32,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 
 public class DataContainer implements Serializable{
-
+    public static final int MAX_IDX = 8;
+    public static final int MAX_IDX_WRITABLE = 4;
     public String mFileName;
     public static String TAG = "DataContainer TAG";
+
+
+    public HashSet<Integer> writerIndices = new HashSet<>();
+
+    public GeneralSubList[] sublists;
 
     public byte[] serialize()
     {
@@ -163,18 +170,7 @@ public class DataContainer implements Serializable{
         return false;
     }
 
-    public static final int MAX_IDX = 8;
-    public static final int MAX_IDX_WRITABLE = 4;
-    public HashMap<String,HashMap<String, Object>> GetHashMap() {
-        HashMap<String,HashMap<String, Object>> r = new HashMap<>();
-        for(int idx = 0 ; idx<MAX_IDX; idx++)
-        {
-            SubList list = getSubList(idx);
-            r.put(list.getName(), list.getHashMap());
-        }
 
-        return r;
-    }
 
     public void clearWriterIdx(HashSet<Integer> writenIdxs) {
         writerIndices.removeAll(writenIdxs);
@@ -238,9 +234,6 @@ public class DataContainer implements Serializable{
         return null;
     }
 
-    public HashSet<Integer> writerIndices = new HashSet<>();
-
-    public GeneralSubList[] sublists;
 
 
     private static int getTableOffset(int listIdx)
@@ -811,6 +804,9 @@ public class DataContainer implements Serializable{
         return new byte[]{0,0,0,0};
         */
     }
-
+    int getTableCRC()
+    {
+        return (int)DataDB.getDBInstance().getCRC();
+    }
 
 }

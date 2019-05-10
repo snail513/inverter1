@@ -122,7 +122,8 @@ public enum Param_idx {
 
 
 
-    run_status,
+    run_status1,
+    run_status2,
     I_rms,
     run_freq,
     dc_voltage,

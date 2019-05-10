@@ -2,10 +2,15 @@ package com.example.naragr.project1.logic.ParamTable;
 
 import android.util.Log;
 
+import com.example.naragr.project1.logic.DataContainer;
 import com.example.naragr.project1.logic.ParamSubject.SubList;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 public class DataDB {
     public static ParamTable tableInstance = new ParamTable();
@@ -323,6 +328,37 @@ public class DataDB {
         return ParamTable.Param_table.values()[idx];
     }
 
+    public long getCRC() {
+        Checksum crc = new CRC32();
+        int length = ParamTable.getRangedLength();
+        //try {
+            ////////////////////////////////////////////////////////////////////////////////
+            //BufferedInputStream in = new BufferedInputStream(new FileInputStream(filename));
+            ByteBuffer byteBuffer = ByteBuffer.allocate(datas.length * 4);
+            IntBuffer intBuffer = byteBuffer.asIntBuffer();
+            intBuffer.put(datas);
+            byte[] buffer = byteBuffer.array();
+
+
+
+            //while ((length = in.read(buffer)) >= 0)
+            crc.update(buffer, 0, length);
+
+            //in.close();
+            ////////////////////////////////////////////////////////////////////////////////
+        /*
+        } catch (IOException e) {
+            System.err.println(e);
+            System.exit(2);
+        }
+        */
+        return crc.getValue();
+
+        /*
+        return 0;
+        */
+    }
+/*
     public SubList getSubList(int idx)
     {
         ParamTable.Param_table table = getParamTableOfIdx(idx);
@@ -356,4 +392,5 @@ public class DataDB {
         }
         return subList;
     }
+    */
 }

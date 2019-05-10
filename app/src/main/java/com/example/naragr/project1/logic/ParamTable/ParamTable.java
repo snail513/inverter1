@@ -1,6 +1,5 @@
 package com.example.naragr.project1.logic.ParamTable;
 
-import com.example.naragr.project1.logic.DataContainer;
 
 public class ParamTable{
 
@@ -135,13 +134,13 @@ public class ParamTable{
             case err_current_4: return "에러 발생시 전류량4";
             case err_freq_4: return "에러 발생시 동작 주파수4";
 
-            case run_status: return "동작 상태";
+            case run_status1: return "동작 상태1";
+            case run_status2: return "동작 상태2";
             case I_rms: return "전류값";
             case run_freq: return "동작주파수";
             case dc_voltage: return "직류 전압값";
             case ipm_temperature: return "IPM 온도";
             case motor_temperature: return "모터 온도 상태";
-
 
             default : return "UNKNOWN";
         }
@@ -252,6 +251,8 @@ public class ParamTable{
             new Parameter(Param_idx.values()[23],ROT_DIR3_T, Param_table.paramlunchings,true,0,2,0,87),
             new Parameter(Param_idx.values()[24],INT_T, Param_table.paramlunchings,true,0,1,0,87),
 
+
+
             new Parameter(Param_idx.values()[25],INPUT_COMM_T, Param_table.paramsettings,true,0,4,0,128),
             new Parameter(Param_idx.values()[26],BOOL_T, Param_table.paramsettings,true,0,1,0,129),
             new Parameter(Param_idx.values()[27],FREQ_T, Param_table.paramsettings,true,0,3,0,130),
@@ -262,6 +263,8 @@ public class ParamTable{
             new Parameter(Param_idx.values()[32],FLOAT_T, Param_table.paramsettings,true,50,600,0,135),
             new Parameter(Param_idx.values()[33],FLOAT_T, Param_table.paramsettings,true,500,2000,0,136),
 
+
+
             new Parameter(Param_idx.values()[34],INT_T, Param_table.protectionsettings,true,150,200,100,160),
             new Parameter(Param_idx.values()[35],INT_T, Param_table.protectionsettings,true,10,30,0,161),
             new Parameter(Param_idx.values()[36],BOOL_T, Param_table.protectionsettings,true,1,1,0,162),
@@ -270,6 +273,8 @@ public class ParamTable{
             new Parameter(Param_idx.values()[39],INT_T, Param_table.protectionsettings,true,30,80,0,165),
             new Parameter(Param_idx.values()[40],INT_T, Param_table.protectionsettings,true,10,80,0,166),
             new Parameter(Param_idx.values()[41],BOOL_T, Param_table.protectionsettings,true,0,1,0,167),
+
+
 
             new Parameter(Param_idx.values()[42],DIN_T, Param_table.externio,true,0,8,0,192),
             new Parameter(Param_idx.values()[43],DIN_T, Param_table.externio,true,0,8,0,193),
@@ -286,6 +291,9 @@ public class ParamTable{
             new Parameter(Param_idx.values()[54],INT_T, Param_table.externio,true,1,254,1,209),
             new Parameter(Param_idx.values()[55],BAUD_T, Param_table.externio,true,2,5,0,210),
 
+
+
+
             new Parameter(Param_idx.values()[56],FLOAT_T, Param_table.parammotor,false,0,0,0,8),
             new Parameter(Param_idx.values()[57],FLOAT_T, Param_table.parammotor,false,0,0,0,9),
             new Parameter(Param_idx.values()[58],FLOAT_T, Param_table.parammotor,false,0,0,0,10),
@@ -295,12 +303,16 @@ public class ParamTable{
             new Parameter(Param_idx.values()[62],INT_T, Param_table.parammotor,false,0,0,0,14),
             new Parameter(Param_idx.values()[63],INT_T, Param_table.parammotor,false,0,0,0,15),
 
+
+
             new Parameter(Param_idx.values()[64],INT_T, Param_table.devsettings,false,0,0,0,24),
             new Parameter(Param_idx.values()[65],INT_T, Param_table.devsettings,false,0,0,0,25),
             new Parameter(Param_idx.values()[66],INT_T, Param_table.devsettings,false,0,0,0,26),
             new Parameter(Param_idx.values()[67],INT_T, Param_table.devsettings,false,0,0,0,27),
             new Parameter(Param_idx.values()[68],INT_T, Param_table.devsettings,false,0,0,0,28),
             new Parameter(Param_idx.values()[69],INT_T, Param_table.devsettings,false,0,0,0,29),
+
+
 
             new Parameter(Param_idx.values()[70],INT_T, Param_table.error,false,0,0,0,224),
             new Parameter(Param_idx.values()[71],INT_T, Param_table.error,false,0,0,0,225),
@@ -328,12 +340,19 @@ public class ParamTable{
             new Parameter(Param_idx.values()[93],FLOAT_T, Param_table.error,false,0,0,0,247),
             new Parameter(Param_idx.values()[94],FLOAT_T, Param_table.error,false,0,0,0,248),
 
+
+
+
+
+
             new Parameter(Param_idx.values()[95],INT_T, Param_table.statusinverter,false,0,0,0,40),
-            new Parameter(Param_idx.values()[96],FLOAT_T, Param_table.statusinverter,false,0,0,0,41),
+            new Parameter(Param_idx.values()[96],INT_T, Param_table.statusinverter,false,0,0,0,41),
             new Parameter(Param_idx.values()[97],FLOAT_T, Param_table.statusinverter,false,0,0,0,42),
             new Parameter(Param_idx.values()[98],FLOAT_T, Param_table.statusinverter,false,0,0,0,43),
             new Parameter(Param_idx.values()[99],FLOAT_T, Param_table.statusinverter,false,0,0,0,44),
-            new Parameter(Param_idx.values()[100],MOTOR_TM_T, Param_table.statusinverter,false,0,0,0,45),
+            new Parameter(Param_idx.values()[100],FLOAT_T, Param_table.statusinverter,false,0,0,0,45),
+            new Parameter(Param_idx.values()[101],MOTOR_TM_T, Param_table.statusinverter,false,0,0,0,46),
+
     };
 
 

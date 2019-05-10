@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.hardware.usb.UsbManager;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Build;
@@ -13,8 +12,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,7 +54,7 @@ import me.relex.circleindicator.CircleIndicator;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static ComPortHandler mSerialPortHandler;
+    //public static ComPortHandler mSerialPortHandler;
     public static MainActivity me;
     public static DataContainer dataContainer;
     private RecyclerView[] recyclerViewArray ;
@@ -91,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvDirectionState;
     private TextView tvProtectionState;
     private TextView tvTripState;
+
+    public void updateSelectedFileName(String fileName)
+    {
+        mTvSelectedFileName.setText(fileName);
+    }
 
     LinearLayout mLayoutMainSummary;
     private void setSummaryUIVisible(int isVisible) {
@@ -186,11 +188,6 @@ public class MainActivity extends AppCompatActivity {
 
         mTvSelectedFileName = findViewById(R.id.textViewSelectedFileName);
 
-    }
-
-    public void updateSelectedFileName(String fileName)
-    {
-        mTvSelectedFileName.setText(fileName);
     }
 
 
@@ -449,7 +446,6 @@ public class MainActivity extends AppCompatActivity {
                 if(mButtonSwitchInput.isChecked())
                 {
                     int baudrate= 9600;
-                    ;
                     if(!ComPortHandler.connect(baudrate))
                     {
                         mButtonSwitchInput.setChecked(false);
@@ -467,23 +463,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    void setMonitorEnter()
-    {
-        /*
-        mMonitorThread = new MonitorThread(this, dataContainer);
-        rwMode = RWMode.Mode.Monitor;
-        mMonitorThread.start();
-        */
-    }
-
-    void setMonitorQuit()
-    {
-        /*
-        rwMode = RWMode.Mode.Default;
-        mMonitorThread.Quit();
-        */
     }
 
     @Override
