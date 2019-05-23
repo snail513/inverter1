@@ -753,7 +753,7 @@ public class NfcVComm {
                 int valueIdx = idxs[i];
                 int block = blocks[i];
 
-                int currAddr = DataDB.getInstance().table[valueIdx].addr;
+                int currAddr = ParamTable.table[valueIdx].addr;
                 if (ndef != null) {
 
                     do{
@@ -873,7 +873,7 @@ public class NfcVComm {
                 int block = blocks[i];
 
 
-                int currAddr = DataDB.getInstance().table[i].addr;
+                int currAddr = ParamTable.table[i].addr;
                 if (ndef != null) {
 
                     do{

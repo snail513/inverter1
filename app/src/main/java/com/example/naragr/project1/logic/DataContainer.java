@@ -123,7 +123,7 @@ public class DataContainer implements Serializable{
         {
             //Log.d("getValueList", "add : " + );
             Object o = getObject(i+startIdx);
-            if(DataDB.getInstance().table[i+startIdx].data_type == ParamTable.FLOAT_T)
+            if(ParamTable.table[i+startIdx].data_type == ParamTable.FLOAT_T)
             {
 
                 float fvalue = (float)o;
@@ -537,7 +537,7 @@ public class DataContainer implements Serializable{
         {
             return;
         }
-        Parameter p =  DataDB.getInstance().table[varIdx];
+        Parameter p =  ParamTable.table[varIdx];
         int var;
         if(p.data_type == ParamTable.FLOAT_T)
         {

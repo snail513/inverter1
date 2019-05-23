@@ -195,7 +195,7 @@ public class ParamTable{
         return value <= getMaxValue(idx)&& value >= getMinValue(idx);
     }
 
-    public boolean isValidIdx(int idx) {
+    public static boolean isValidIdx(int idx) {
         return idx<table.length;
     }
 
@@ -224,142 +224,259 @@ public class ParamTable{
         }
         return -1;
     }
-    public static Parameter[] table = {
-            new Parameter(Param_idx.values()[0],FLOAT_T, Param_table.paramlunchings,true,200,2000,10,64),
-            new Parameter(Param_idx.values()[1],FLOAT_T, Param_table.paramlunchings,true,200,2000,10,65),
-            new Parameter(Param_idx.values()[2],FLOAT_T, Param_table.paramlunchings,true,200,2000,10,66),
-            new Parameter(Param_idx.values()[3],FLOAT_T, Param_table.paramlunchings,true,200,2000,10,67),
-            new Parameter(Param_idx.values()[4],FLOAT_T, Param_table.paramlunchings,true,200,2000,10,68),
-            new Parameter(Param_idx.values()[5],FLOAT_T, Param_table.paramlunchings,true,200,2000,10,69),
-            new Parameter(Param_idx.values()[6],FLOAT_T, Param_table.paramlunchings,true,200,2000,10,70),
-            new Parameter(Param_idx.values()[7],FLOAT_T, Param_table.paramlunchings,true,200,2000,10,71),
-            new Parameter(Param_idx.values()[8],FLOAT_T, Param_table.paramlunchings,true,200,2000,10,72),
-            new Parameter(Param_idx.values()[9],FLOAT_T, Param_table.paramlunchings,true,10,2000,10,73),
-            new Parameter(Param_idx.values()[10],FLOAT_T, Param_table.paramlunchings,true,2000,2000,10,74),
-            new Parameter(Param_idx.values()[11],FLOAT_T, Param_table.paramlunchings,true,100,6000,10,75),
-            new Parameter(Param_idx.values()[12],FLOAT_T, Param_table.paramlunchings,true,100,6000,10,76),
-            new Parameter(Param_idx.values()[13],BOOL_T, Param_table.paramlunchings,true,0,1,1,77),
-            new Parameter(Param_idx.values()[14],BOOL_T, Param_table.paramlunchings,true,0,1,0,78),
-            new Parameter(Param_idx.values()[15],BOOL_T, Param_table.paramlunchings,true,0,1,0,79),
-            new Parameter(Param_idx.values()[16],BOOL_T, Param_table.paramlunchings,true,0,1,0,80),
-            new Parameter(Param_idx.values()[17],FLOAT_T, Param_table.paramlunchings,true,10,2000,10,81),
-            new Parameter(Param_idx.values()[18],FLOAT_T, Param_table.paramlunchings,true,10,2000,10,82),
-            new Parameter(Param_idx.values()[19],FLOAT_T, Param_table.paramlunchings,true,10,2000,10,83),
-            new Parameter(Param_idx.values()[20],FLOAT_T, Param_table.paramlunchings,true,10,2000,10,84),
-            new Parameter(Param_idx.values()[21],FLOAT_T, Param_table.paramlunchings,true,10,2000,10,85),
-            new Parameter(Param_idx.values()[22],FLOAT_T, Param_table.paramlunchings,true,10,2000,10,86),
-            new Parameter(Param_idx.values()[23],ROT_DIR3_T, Param_table.paramlunchings,true,0,2,0,87),
-            new Parameter(Param_idx.values()[24],INT_T, Param_table.paramlunchings,true,0,1,0,87),
+    //public static Parameter[] table;
+    public static final Parameter[] table =
+        {
+                new Parameter(Param_idx.values()[0], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 64),
+                new Parameter(Param_idx.values()[1], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 65),
+                new Parameter(Param_idx.values()[2], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 66),
+                new Parameter(Param_idx.values()[3], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 67),
+                new Parameter(Param_idx.values()[4], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 68),
+                new Parameter(Param_idx.values()[5], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 69),
+                new Parameter(Param_idx.values()[6], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 70),
+                new Parameter(Param_idx.values()[7], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 71),
+                new Parameter(Param_idx.values()[8], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 72),
+                new Parameter(Param_idx.values()[9], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 73),
+                new Parameter(Param_idx.values()[10], FLOAT_T, Param_table.paramlunchings, true, 2000, 2000, 10, 74),
+                new Parameter(Param_idx.values()[11], FLOAT_T, Param_table.paramlunchings, true, 100, 6000, 10, 75),
+                new Parameter(Param_idx.values()[12], FLOAT_T, Param_table.paramlunchings, true, 100, 6000, 10, 76),
+                new Parameter(Param_idx.values()[13], BOOL_T, Param_table.paramlunchings, true, 0, 1, 1, 77),
+                new Parameter(Param_idx.values()[14], BOOL_T, Param_table.paramlunchings, true, 0, 1, 0, 78),
+                new Parameter(Param_idx.values()[15], BOOL_T, Param_table.paramlunchings, true, 0, 1, 0, 79),
+                new Parameter(Param_idx.values()[16], BOOL_T, Param_table.paramlunchings, true, 0, 1, 0, 80),
+                new Parameter(Param_idx.values()[17], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 81),
+                new Parameter(Param_idx.values()[18], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 82),
+                new Parameter(Param_idx.values()[19], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 83),
+                new Parameter(Param_idx.values()[20], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 84),
+                new Parameter(Param_idx.values()[21], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 85),
+                new Parameter(Param_idx.values()[22], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 86),
+                new Parameter(Param_idx.values()[23], ROT_DIR3_T, Param_table.paramlunchings, true, 0, 2, 0, 87),
+                new Parameter(Param_idx.values()[24], INT_T, Param_table.paramlunchings, true, 0, 1, 0, 87),
 
 
-
-            new Parameter(Param_idx.values()[25],INPUT_COMM_T, Param_table.paramsettings,true,0,4,0,128),
-            new Parameter(Param_idx.values()[26],BOOL_T, Param_table.paramsettings,true,0,1,0,129),
-            new Parameter(Param_idx.values()[27],FREQ_T, Param_table.paramsettings,true,0,3,0,130),
-            new Parameter(Param_idx.values()[28],STOP_T, Param_table.paramsettings,true,0,2,0,131),
-            new Parameter(Param_idx.values()[29],FLOAT_T, Param_table.paramsettings,true,10,600,1,132),
-            new Parameter(Param_idx.values()[30],FLOAT_T, Param_table.paramsettings,true,30,600,1,133),
-            new Parameter(Param_idx.values()[31],FLOAT_T, Param_table.paramsettings,true,10,600,0,134),
-            new Parameter(Param_idx.values()[32],FLOAT_T, Param_table.paramsettings,true,50,600,0,135),
-            new Parameter(Param_idx.values()[33],FLOAT_T, Param_table.paramsettings,true,500,2000,0,136),
-
+                new Parameter(Param_idx.values()[25], INPUT_COMM_T, Param_table.paramsettings, true, 0, 4, 0, 128),
+                new Parameter(Param_idx.values()[26], BOOL_T, Param_table.paramsettings, true, 0, 1, 0, 129),
+                new Parameter(Param_idx.values()[27], FREQ_T, Param_table.paramsettings, true, 0, 3, 0, 130),
+                new Parameter(Param_idx.values()[28], STOP_T, Param_table.paramsettings, true, 0, 2, 0, 131),
+                new Parameter(Param_idx.values()[29], FLOAT_T, Param_table.paramsettings, true, 10, 600, 1, 132),
+                new Parameter(Param_idx.values()[30], FLOAT_T, Param_table.paramsettings, true, 30, 600, 1, 133),
+                new Parameter(Param_idx.values()[31], FLOAT_T, Param_table.paramsettings, true, 10, 600, 0, 134),
+                new Parameter(Param_idx.values()[32], FLOAT_T, Param_table.paramsettings, true, 50, 600, 0, 135),
+                new Parameter(Param_idx.values()[33], FLOAT_T, Param_table.paramsettings, true, 500, 2000, 0, 136),
 
 
-            new Parameter(Param_idx.values()[34],INT_T, Param_table.protectionsettings,true,150,200,100,160),
-            new Parameter(Param_idx.values()[35],INT_T, Param_table.protectionsettings,true,10,30,0,161),
-            new Parameter(Param_idx.values()[36],BOOL_T, Param_table.protectionsettings,true,1,1,0,162),
-            new Parameter(Param_idx.values()[37],INT_T, Param_table.protectionsettings,true,180,200,100,163),
-            new Parameter(Param_idx.values()[38],INT_T, Param_table.protectionsettings,true,30,60,0,164),
-            new Parameter(Param_idx.values()[39],INT_T, Param_table.protectionsettings,true,30,80,0,165),
-            new Parameter(Param_idx.values()[40],INT_T, Param_table.protectionsettings,true,10,80,0,166),
-            new Parameter(Param_idx.values()[41],BOOL_T, Param_table.protectionsettings,true,0,1,0,167),
+                new Parameter(Param_idx.values()[34], INT_T, Param_table.protectionsettings, true, 150, 200, 100, 160),
+                new Parameter(Param_idx.values()[35], INT_T, Param_table.protectionsettings, true, 10, 30, 0, 161),
+                new Parameter(Param_idx.values()[36], BOOL_T, Param_table.protectionsettings, true, 1, 1, 0, 162),
+                new Parameter(Param_idx.values()[37], INT_T, Param_table.protectionsettings, true, 180, 200, 100, 163),
+                new Parameter(Param_idx.values()[38], INT_T, Param_table.protectionsettings, true, 30, 60, 0, 164),
+                new Parameter(Param_idx.values()[39], INT_T, Param_table.protectionsettings, true, 30, 80, 0, 165),
+                new Parameter(Param_idx.values()[40], INT_T, Param_table.protectionsettings, true, 10, 80, 0, 166),
+                new Parameter(Param_idx.values()[41], BOOL_T, Param_table.protectionsettings, true, 0, 1, 0, 167),
 
 
-
-            new Parameter(Param_idx.values()[42],DIN_T, Param_table.externio,true,0,8,0,192),
-            new Parameter(Param_idx.values()[43],DIN_T, Param_table.externio,true,0,8,0,193),
-            new Parameter(Param_idx.values()[44],DIN_T, Param_table.externio,true,0,8,0,194),
-            new Parameter(Param_idx.values()[45],DIN_T, Param_table.externio,true,0,8,0,195),
-            new Parameter(Param_idx.values()[46],DOUT_T, Param_table.externio,true,0,5,0,196),
-            new Parameter(Param_idx.values()[47],DOUT_T, Param_table.externio,true,0,5,0,197),
-            new Parameter(Param_idx.values()[48],FLOAT_T, Param_table.externio,true,0,100,0,198),
-            new Parameter(Param_idx.values()[49],FLOAT_T, Param_table.externio,true,10,2000,10,199),
-            new Parameter(Param_idx.values()[50],FLOAT_T, Param_table.externio,true,100,100,0,200),
-            new Parameter(Param_idx.values()[51],FLOAT_T, Param_table.externio,true,2000,2000,10,201),
-            new Parameter(Param_idx.values()[52],AOUT_T, Param_table.externio,true,0,3,0,202),
-            new Parameter(Param_idx.values()[53],INT_T, Param_table.externio,true,100,200,10,208),
-            new Parameter(Param_idx.values()[54],INT_T, Param_table.externio,true,1,254,1,209),
-            new Parameter(Param_idx.values()[55],BAUD_T, Param_table.externio,true,2,5,0,210),
-
+                new Parameter(Param_idx.values()[42], DIN_T, Param_table.externio, true, 0, 8, 0, 192),
+                new Parameter(Param_idx.values()[43], DIN_T, Param_table.externio, true, 0, 8, 0, 193),
+                new Parameter(Param_idx.values()[44], DIN_T, Param_table.externio, true, 0, 8, 0, 194),
+                new Parameter(Param_idx.values()[45], DIN_T, Param_table.externio, true, 0, 8, 0, 195),
+                new Parameter(Param_idx.values()[46], DOUT_T, Param_table.externio, true, 0, 5, 0, 196),
+                new Parameter(Param_idx.values()[47], DOUT_T, Param_table.externio, true, 0, 5, 0, 197),
+                new Parameter(Param_idx.values()[48], FLOAT_T, Param_table.externio, true, 0, 100, 0, 198),
+                new Parameter(Param_idx.values()[49], FLOAT_T, Param_table.externio, true, 10, 2000, 10, 199),
+                new Parameter(Param_idx.values()[50], FLOAT_T, Param_table.externio, true, 100, 100, 0, 200),
+                new Parameter(Param_idx.values()[51], FLOAT_T, Param_table.externio, true, 2000, 2000, 10, 201),
+                new Parameter(Param_idx.values()[52], AOUT_T, Param_table.externio, true, 0, 3, 0, 202),
+                new Parameter(Param_idx.values()[53], INT_T, Param_table.externio, true, 100, 200, 10, 208),
+                new Parameter(Param_idx.values()[54], INT_T, Param_table.externio, true, 1, 254, 1, 209),
+                new Parameter(Param_idx.values()[55], BAUD_T, Param_table.externio, true, 2, 5, 0, 210),
 
 
-
-            new Parameter(Param_idx.values()[56],FLOAT_T, Param_table.parammotor,false,0,0,0,8),
-            new Parameter(Param_idx.values()[57],FLOAT_T, Param_table.parammotor,false,0,0,0,9),
-            new Parameter(Param_idx.values()[58],FLOAT_T, Param_table.parammotor,false,0,0,0,10),
-            new Parameter(Param_idx.values()[59],FLOAT_T, Param_table.parammotor,false,0,0,0,11),
-            new Parameter(Param_idx.values()[60],FLOAT_T, Param_table.parammotor,false,0,0,0,12),
-            new Parameter(Param_idx.values()[61],INT_T, Param_table.parammotor,false,0,0,0,13),
-            new Parameter(Param_idx.values()[62],INT_T, Param_table.parammotor,false,0,0,0,14),
-            new Parameter(Param_idx.values()[63],INT_T, Param_table.parammotor,false,0,0,0,15),
-
+                new Parameter(Param_idx.values()[56], FLOAT_T, Param_table.parammotor, false, 0, 0, 0, 8),
+                new Parameter(Param_idx.values()[57], FLOAT_T, Param_table.parammotor, false, 0, 0, 0, 9),
+                new Parameter(Param_idx.values()[58], FLOAT_T, Param_table.parammotor, false, 0, 0, 0, 10),
+                new Parameter(Param_idx.values()[59], FLOAT_T, Param_table.parammotor, false, 0, 0, 0, 11),
+                new Parameter(Param_idx.values()[60], FLOAT_T, Param_table.parammotor, false, 0, 0, 0, 12),
+                new Parameter(Param_idx.values()[61], INT_T, Param_table.parammotor, false, 0, 0, 0, 13),
+                new Parameter(Param_idx.values()[62], INT_T, Param_table.parammotor, false, 0, 0, 0, 14),
+                new Parameter(Param_idx.values()[63], INT_T, Param_table.parammotor, false, 0, 0, 0, 15),
 
 
-            new Parameter(Param_idx.values()[64],INT_T, Param_table.devsettings,false,0,0,0,24),
-            new Parameter(Param_idx.values()[65],INT_T, Param_table.devsettings,false,0,0,0,25),
-            new Parameter(Param_idx.values()[66],INT_T, Param_table.devsettings,false,0,0,0,26),
-            new Parameter(Param_idx.values()[67],INT_T, Param_table.devsettings,false,0,0,0,27),
-            new Parameter(Param_idx.values()[68],INT_T, Param_table.devsettings,false,0,0,0,28),
-            new Parameter(Param_idx.values()[69],INT_T, Param_table.devsettings,false,0,0,0,29),
+                new Parameter(Param_idx.values()[64], INT_T, Param_table.devsettings, false, 0, 0, 0, 24),
+                new Parameter(Param_idx.values()[65], INT_T, Param_table.devsettings, false, 0, 0, 0, 25),
+                new Parameter(Param_idx.values()[66], INT_T, Param_table.devsettings, false, 0, 0, 0, 26),
+                new Parameter(Param_idx.values()[67], INT_T, Param_table.devsettings, false, 0, 0, 0, 27),
+                new Parameter(Param_idx.values()[68], INT_T, Param_table.devsettings, false, 0, 0, 0, 28),
+                new Parameter(Param_idx.values()[69], INT_T, Param_table.devsettings, false, 0, 0, 0, 29),
 
 
-
-            new Parameter(Param_idx.values()[70],INT_T, Param_table.error,false,0,0,0,224),
-            new Parameter(Param_idx.values()[71],INT_T, Param_table.error,false,0,0,0,225),
-            new Parameter(Param_idx.values()[72],INT_T, Param_table.error,false,0,0,0,226),
-            new Parameter(Param_idx.values()[73],FLOAT_T, Param_table.error,false,0,0,0,227),
-            new Parameter(Param_idx.values()[74],FLOAT_T, Param_table.error,false,0,0,0,228),
-            new Parameter(Param_idx.values()[75],INT_T, Param_table.error,false,0,0,0,229),
-            new Parameter(Param_idx.values()[76],INT_T, Param_table.error,false,0,0,0,230),
-            new Parameter(Param_idx.values()[77],INT_T, Param_table.error,false,0,0,0,231),
-            new Parameter(Param_idx.values()[78],FLOAT_T, Param_table.error,false,0,0,0,232),
-            new Parameter(Param_idx.values()[79],FLOAT_T, Param_table.error,false,0,0,0,233),
-            new Parameter(Param_idx.values()[80],INT_T, Param_table.error,false,0,0,0,234),
-            new Parameter(Param_idx.values()[81],INT_T, Param_table.error,false,0,0,0,235),
-            new Parameter(Param_idx.values()[82],INT_T, Param_table.error,false,0,0,0,236),
-            new Parameter(Param_idx.values()[83],FLOAT_T, Param_table.error,false,0,0,0,237),
-            new Parameter(Param_idx.values()[84],FLOAT_T, Param_table.error,false,0,0,0,238),
-            new Parameter(Param_idx.values()[85],INT_T, Param_table.error,false,0,0,0,239),
-            new Parameter(Param_idx.values()[86],INT_T, Param_table.error,false,0,0,0,240),
-            new Parameter(Param_idx.values()[87],INT_T, Param_table.error,false,0,0,0,241),
-            new Parameter(Param_idx.values()[88],FLOAT_T, Param_table.error,false,0,0,0,242),
-            new Parameter(Param_idx.values()[89],FLOAT_T, Param_table.error,false,0,0,0,243),
-            new Parameter(Param_idx.values()[90],INT_T, Param_table.error,false,0,0,0,244),
-            new Parameter(Param_idx.values()[91],INT_T, Param_table.error,false,0,0,0,245),
-            new Parameter(Param_idx.values()[92],INT_T, Param_table.error,false,0,0,0,246),
-            new Parameter(Param_idx.values()[93],FLOAT_T, Param_table.error,false,0,0,0,247),
-            new Parameter(Param_idx.values()[94],FLOAT_T, Param_table.error,false,0,0,0,248),
-
+                new Parameter(Param_idx.values()[70], INT_T, Param_table.error, false, 0, 0, 0, 224),
+                new Parameter(Param_idx.values()[71], INT_T, Param_table.error, false, 0, 0, 0, 225),
+                new Parameter(Param_idx.values()[72], INT_T, Param_table.error, false, 0, 0, 0, 226),
+                new Parameter(Param_idx.values()[73], FLOAT_T, Param_table.error, false, 0, 0, 0, 227),
+                new Parameter(Param_idx.values()[74], FLOAT_T, Param_table.error, false, 0, 0, 0, 228),
+                new Parameter(Param_idx.values()[75], INT_T, Param_table.error, false, 0, 0, 0, 229),
+                new Parameter(Param_idx.values()[76], INT_T, Param_table.error, false, 0, 0, 0, 230),
+                new Parameter(Param_idx.values()[77], INT_T, Param_table.error, false, 0, 0, 0, 231),
+                new Parameter(Param_idx.values()[78], FLOAT_T, Param_table.error, false, 0, 0, 0, 232),
+                new Parameter(Param_idx.values()[79], FLOAT_T, Param_table.error, false, 0, 0, 0, 233),
+                new Parameter(Param_idx.values()[80], INT_T, Param_table.error, false, 0, 0, 0, 234),
+                new Parameter(Param_idx.values()[81], INT_T, Param_table.error, false, 0, 0, 0, 235),
+                new Parameter(Param_idx.values()[82], INT_T, Param_table.error, false, 0, 0, 0, 236),
+                new Parameter(Param_idx.values()[83], FLOAT_T, Param_table.error, false, 0, 0, 0, 237),
+                new Parameter(Param_idx.values()[84], FLOAT_T, Param_table.error, false, 0, 0, 0, 238),
+                new Parameter(Param_idx.values()[85], INT_T, Param_table.error, false, 0, 0, 0, 239),
+                new Parameter(Param_idx.values()[86], INT_T, Param_table.error, false, 0, 0, 0, 240),
+                new Parameter(Param_idx.values()[87], INT_T, Param_table.error, false, 0, 0, 0, 241),
+                new Parameter(Param_idx.values()[88], FLOAT_T, Param_table.error, false, 0, 0, 0, 242),
+                new Parameter(Param_idx.values()[89], FLOAT_T, Param_table.error, false, 0, 0, 0, 243),
+                new Parameter(Param_idx.values()[90], INT_T, Param_table.error, false, 0, 0, 0, 244),
+                new Parameter(Param_idx.values()[91], INT_T, Param_table.error, false, 0, 0, 0, 245),
+                new Parameter(Param_idx.values()[92], INT_T, Param_table.error, false, 0, 0, 0, 246),
+                new Parameter(Param_idx.values()[93], FLOAT_T, Param_table.error, false, 0, 0, 0, 247),
+                new Parameter(Param_idx.values()[94], FLOAT_T, Param_table.error, false, 0, 0, 0, 248),
 
 
+                new Parameter(Param_idx.values()[95], INT_T, Param_table.statusinverter, false, 0, 0, 0, 40),
+                new Parameter(Param_idx.values()[96], INT_T, Param_table.statusinverter, false, 0, 0, 0, 41),
+                new Parameter(Param_idx.values()[97], FLOAT_T, Param_table.statusinverter, false, 0, 0, 0, 42),
+                new Parameter(Param_idx.values()[98], FLOAT_T, Param_table.statusinverter, false, 0, 0, 0, 43),
+                new Parameter(Param_idx.values()[99], FLOAT_T, Param_table.statusinverter, false, 0, 0, 0, 44),
+                new Parameter(Param_idx.values()[100], FLOAT_T, Param_table.statusinverter, false, 0, 0, 0, 45),
+                new Parameter(Param_idx.values()[101], MOTOR_TM_T, Param_table.statusinverter, false, 0, 0, 0, 46),
+        };
+/*
+    public static void ParamTableInit()
+    {
+        table = new Parameter[Param_idx.values().length ];
+
+        table[0] = new Parameter(Param_idx.values()[0], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 64);
+        table[1] = new Parameter(Param_idx.values()[1], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 65);
+        table[2] = new Parameter(Param_idx.values()[2], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 66);
+        table[3] = new Parameter(Param_idx.values()[3], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 67);
+        table[4] = new Parameter(Param_idx.values()[4], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 68);
+        table[5] = new Parameter(Param_idx.values()[5], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 69);
+        table[6] = new Parameter(Param_idx.values()[6], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 70);
+        table[7] = new Parameter(Param_idx.values()[7], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 71);
+        table[8] = new Parameter(Param_idx.values()[8], FLOAT_T, Param_table.paramlunchings, true, 200, 2000, 10, 72);
+        table[9] = new Parameter(Param_idx.values()[9], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 73);
+        table[10] = new Parameter(Param_idx.values()[10], FLOAT_T, Param_table.paramlunchings, true, 2000, 2000, 10, 74);
+        table[11] = new Parameter(Param_idx.values()[11], FLOAT_T, Param_table.paramlunchings, true, 100, 6000, 10, 75);
+        table[12] = new Parameter(Param_idx.values()[12], FLOAT_T, Param_table.paramlunchings, true, 100, 6000, 10, 76);
+        table[13] = new Parameter(Param_idx.values()[13], BOOL_T, Param_table.paramlunchings, true, 0, 1, 1, 77);
+        table[14] = new Parameter(Param_idx.values()[14], BOOL_T, Param_table.paramlunchings, true, 0, 1, 0, 78);
+        table[15] = new Parameter(Param_idx.values()[15], BOOL_T, Param_table.paramlunchings, true, 0, 1, 0, 79);
+        table[16] = new Parameter(Param_idx.values()[16], BOOL_T, Param_table.paramlunchings, true, 0, 1, 0, 80);
+        table[17] = new Parameter(Param_idx.values()[17], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 81);
+        table[18] = new Parameter(Param_idx.values()[18], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 82);
+        table[19] = new Parameter(Param_idx.values()[19], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 83);
+        table[20] = new Parameter(Param_idx.values()[20], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 84);
+        table[21] = new Parameter(Param_idx.values()[21], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 85);
+        table[22] = new Parameter(Param_idx.values()[22], FLOAT_T, Param_table.paramlunchings, true, 10, 2000, 10, 86);
+        table[23] = new Parameter(Param_idx.values()[23], ROT_DIR3_T, Param_table.paramlunchings, true, 0, 2, 0, 87);
+        table[24] = new Parameter(Param_idx.values()[24], INT_T, Param_table.paramlunchings, true, 0, 1, 0, 87);
 
 
+        table[25] = new Parameter(Param_idx.values()[25], INPUT_COMM_T, Param_table.paramsettings, true, 0, 4, 0, 128);
+        table[26] = new Parameter(Param_idx.values()[26], BOOL_T, Param_table.paramsettings, true, 0, 1, 0, 129);
+        table[27] = new Parameter(Param_idx.values()[27], FREQ_T, Param_table.paramsettings, true, 0, 3, 0, 130);
+        table[28] = new Parameter(Param_idx.values()[28], STOP_T, Param_table.paramsettings, true, 0, 2, 0, 131);
+        table[29] = new Parameter(Param_idx.values()[29], FLOAT_T, Param_table.paramsettings, true, 10, 600, 1, 132);
+        table[30] = new Parameter(Param_idx.values()[30], FLOAT_T, Param_table.paramsettings, true, 30, 600, 1, 133);
+        table[31] = new Parameter(Param_idx.values()[31], FLOAT_T, Param_table.paramsettings, true, 10, 600, 0, 134);
+        table[32] = new Parameter(Param_idx.values()[32], FLOAT_T, Param_table.paramsettings, true, 50, 600, 0, 135);
+        table[33] = new Parameter(Param_idx.values()[33], FLOAT_T, Param_table.paramsettings, true, 500, 2000, 0, 136);
 
-            new Parameter(Param_idx.values()[95],INT_T, Param_table.statusinverter,false,0,0,0,40),
-            new Parameter(Param_idx.values()[96],INT_T, Param_table.statusinverter,false,0,0,0,41),
-            new Parameter(Param_idx.values()[97],FLOAT_T, Param_table.statusinverter,false,0,0,0,42),
-            new Parameter(Param_idx.values()[98],FLOAT_T, Param_table.statusinverter,false,0,0,0,43),
-            new Parameter(Param_idx.values()[99],FLOAT_T, Param_table.statusinverter,false,0,0,0,44),
-            new Parameter(Param_idx.values()[100],FLOAT_T, Param_table.statusinverter,false,0,0,0,45),
-            new Parameter(Param_idx.values()[101],MOTOR_TM_T, Param_table.statusinverter,false,0,0,0,46),
 
-    };
+        table[34] = new Parameter(Param_idx.values()[34], INT_T, Param_table.protectionsettings, true, 150, 200, 100, 160);
+        table[35] = new Parameter(Param_idx.values()[35], INT_T, Param_table.protectionsettings, true, 10, 30, 0, 161);
+        table[36] = new Parameter(Param_idx.values()[36], BOOL_T, Param_table.protectionsettings, true, 1, 1, 0, 162);
+        table[37] = new Parameter(Param_idx.values()[37], INT_T, Param_table.protectionsettings, true, 180, 200, 100, 163);
+        table[38] = new Parameter(Param_idx.values()[38], INT_T, Param_table.protectionsettings, true, 30, 60, 0, 164);
+        table[39] = new Parameter(Param_idx.values()[39], INT_T, Param_table.protectionsettings, true, 30, 80, 0, 165);
+        table[40] = new Parameter(Param_idx.values()[40], INT_T, Param_table.protectionsettings, true, 10, 80, 0, 166);
+        table[41] = new Parameter(Param_idx.values()[41], BOOL_T, Param_table.protectionsettings, true, 0, 1, 0, 167);
+
+
+        table[42] = new Parameter(Param_idx.values()[42], DIN_T, Param_table.externio, true, 0, 8, 0, 192);
+        table[43] = new Parameter(Param_idx.values()[43], DIN_T, Param_table.externio, true, 0, 8, 0, 193);
+        table[44] = new Parameter(Param_idx.values()[44], DIN_T, Param_table.externio, true, 0, 8, 0, 194);
+        table[45] = new Parameter(Param_idx.values()[45], DIN_T, Param_table.externio, true, 0, 8, 0, 195);
+        table[46] = new Parameter(Param_idx.values()[46], DOUT_T, Param_table.externio, true, 0, 5, 0, 196);
+        table[47] = new Parameter(Param_idx.values()[47], DOUT_T, Param_table.externio, true, 0, 5, 0, 197);
+        table[48] = new Parameter(Param_idx.values()[48], FLOAT_T, Param_table.externio, true, 0, 100, 0, 198);
+        table[49] = new Parameter(Param_idx.values()[49], FLOAT_T, Param_table.externio, true, 10, 2000, 10, 199);
+        table[50] = new Parameter(Param_idx.values()[50], FLOAT_T, Param_table.externio, true, 100, 100, 0, 200);
+        table[51] = new Parameter(Param_idx.values()[51], FLOAT_T, Param_table.externio, true, 2000, 2000, 10, 201);
+        table[52] = new Parameter(Param_idx.values()[52], AOUT_T, Param_table.externio, true, 0, 3, 0, 202);
+        table[53] = new Parameter(Param_idx.values()[53], INT_T, Param_table.externio, true, 100, 200, 10, 208);
+        table[54] = new Parameter(Param_idx.values()[54], INT_T, Param_table.externio, true, 1, 254, 1, 209);
+        table[55] = new Parameter(Param_idx.values()[55], BAUD_T, Param_table.externio, true, 2, 5, 0, 210);
+
+
+        table[56] = new Parameter(Param_idx.values()[56], FLOAT_T, Param_table.parammotor, false, 0, 0, 0, 8);
+        table[57] = new Parameter(Param_idx.values()[57], FLOAT_T, Param_table.parammotor, false, 0, 0, 0, 9);
+        table[58] = new Parameter(Param_idx.values()[58], FLOAT_T, Param_table.parammotor, false, 0, 0, 0, 10);
+        table[59] = new Parameter(Param_idx.values()[59], FLOAT_T, Param_table.parammotor, false, 0, 0, 0, 11);
+        table[60] = new Parameter(Param_idx.values()[60], FLOAT_T, Param_table.parammotor, false, 0, 0, 0, 12);
+        table[61] = new Parameter(Param_idx.values()[61], INT_T, Param_table.parammotor, false, 0, 0, 0, 13);
+        table[62] = new Parameter(Param_idx.values()[62], INT_T, Param_table.parammotor, false, 0, 0, 0, 14);
+        table[63] = new Parameter(Param_idx.values()[63], INT_T, Param_table.parammotor, false, 0, 0, 0, 15);
+
+
+        table[64] = new Parameter(Param_idx.values()[64], INT_T, Param_table.devsettings, false, 0, 0, 0, 24);
+        table[65] = new Parameter(Param_idx.values()[65], INT_T, Param_table.devsettings, false, 0, 0, 0, 25);
+        table[66] = new Parameter(Param_idx.values()[66], INT_T, Param_table.devsettings, false, 0, 0, 0, 26);
+        table[67] = new Parameter(Param_idx.values()[67], INT_T, Param_table.devsettings, false, 0, 0, 0, 27);
+        table[68] = new Parameter(Param_idx.values()[68], INT_T, Param_table.devsettings, false, 0, 0, 0, 28);
+        table[69] = new Parameter(Param_idx.values()[69], INT_T, Param_table.devsettings, false, 0, 0, 0, 29);
+
+
+        table[70] = new Parameter(Param_idx.values()[70], INT_T, Param_table.error, false, 0, 0, 0, 224);
+        table[71] = new Parameter(Param_idx.values()[71], INT_T, Param_table.error, false, 0, 0, 0, 225);
+        table[72] = new Parameter(Param_idx.values()[72], INT_T, Param_table.error, false, 0, 0, 0, 226);
+        table[73] = new Parameter(Param_idx.values()[73], FLOAT_T, Param_table.error, false, 0, 0, 0, 227);
+        table[74] = new Parameter(Param_idx.values()[74], FLOAT_T, Param_table.error, false, 0, 0, 0, 228);
+        table[75] = new Parameter(Param_idx.values()[75], INT_T, Param_table.error, false, 0, 0, 0, 229);
+        table[76] = new Parameter(Param_idx.values()[76], INT_T, Param_table.error, false, 0, 0, 0, 230);
+        table[77] = new Parameter(Param_idx.values()[77], INT_T, Param_table.error, false, 0, 0, 0, 231);
+        table[78] = new Parameter(Param_idx.values()[78], FLOAT_T, Param_table.error, false, 0, 0, 0, 232);
+        table[79] = new Parameter(Param_idx.values()[79], FLOAT_T, Param_table.error, false, 0, 0, 0, 233);
+        table[80] = new Parameter(Param_idx.values()[80], INT_T, Param_table.error, false, 0, 0, 0, 234);
+        table[81] = new Parameter(Param_idx.values()[81], INT_T, Param_table.error, false, 0, 0, 0, 235);
+        table[82] = new Parameter(Param_idx.values()[82], INT_T, Param_table.error, false, 0, 0, 0, 236);
+        table[83] = new Parameter(Param_idx.values()[83], FLOAT_T, Param_table.error, false, 0, 0, 0, 237);
+        table[84] = new Parameter(Param_idx.values()[84], FLOAT_T, Param_table.error, false, 0, 0, 0, 238);
+        table[85] = new Parameter(Param_idx.values()[85], INT_T, Param_table.error, false, 0, 0, 0, 239);
+        table[86] = new Parameter(Param_idx.values()[86], INT_T, Param_table.error, false, 0, 0, 0, 240);
+        table[87] = new Parameter(Param_idx.values()[87], INT_T, Param_table.error, false, 0, 0, 0, 241);
+        table[88] = new Parameter(Param_idx.values()[88], FLOAT_T, Param_table.error, false, 0, 0, 0, 242);
+        table[89] = new Parameter(Param_idx.values()[89], FLOAT_T, Param_table.error, false, 0, 0, 0, 243);
+        table[90] = new Parameter(Param_idx.values()[90], INT_T, Param_table.error, false, 0, 0, 0, 244);
+        table[91] = new Parameter(Param_idx.values()[91], INT_T, Param_table.error, false, 0, 0, 0, 245);
+        table[92] = new Parameter(Param_idx.values()[92], INT_T, Param_table.error, false, 0, 0, 0, 246);
+        table[93] = new Parameter(Param_idx.values()[93], FLOAT_T, Param_table.error, false, 0, 0, 0, 247);
+        table[94] = new Parameter(Param_idx.values()[94], FLOAT_T, Param_table.error, false, 0, 0, 0, 248);
+
+
+        table[95] = new Parameter(Param_idx.values()[95], INT_T, Param_table.statusinverter, false, 0, 0, 0, 40);
+        table[96] = new Parameter(Param_idx.values()[96], INT_T, Param_table.statusinverter, false, 0, 0, 0, 41);
+        table[97] = new Parameter(Param_idx.values()[97], FLOAT_T, Param_table.statusinverter, false, 0, 0, 0, 42);
+        table[98] = new Parameter(Param_idx.values()[98], FLOAT_T, Param_table.statusinverter, false, 0, 0, 0, 43);
+        table[99] = new Parameter(Param_idx.values()[99], FLOAT_T, Param_table.statusinverter, false, 0, 0, 0, 44);
+        table[100] = new Parameter(Param_idx.values()[100], FLOAT_T, Param_table.statusinverter, false, 0, 0, 0, 45);
+        table[101] = new Parameter(Param_idx.values()[101], MOTOR_TM_T, Param_table.statusinverter, false, 0, 0, 0, 46);
+    }
+    */
+    public static boolean getIsRanged(int idx)
+    {
+        return table[idx].isRanged;
+    }
 
 
     public ParamTable()
     {
-        int size = Param_idx.values().length;
-        table = new Parameter[size];
+        //int size = Param_idx.values().length;
+        //table = new Parameter[size];
 
 
         //System.out.println(toString());

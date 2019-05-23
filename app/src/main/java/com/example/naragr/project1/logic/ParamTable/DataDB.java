@@ -13,10 +13,10 @@ import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
 public class DataDB {
-    public static ParamTable tableInstance = new ParamTable();
-    public static ParamTable getInstance (){
-        return tableInstance;
-    }
+    //public static ParamTable ParamTable = new ParamTable();
+    /*public static ParamTable getInstance (){
+        return ParamTable;
+    }*/
 
     private int datas[];
     private static int rangedSize;
@@ -27,19 +27,20 @@ public class DataDB {
 
     public DataDB()
     {
-        datas = new int[getInstance().table.length];
+        datas = new int[ParamTable.table.length];
         init();
     }
 
     public DataDB init()
     {
         rangedSize=0;
-        for(int i=0; i<tableInstance.table.length;i++)
+        //Log.d("DATADB", "ParamTable.table.length = " + ParamTable.table.length);
+        for(int i=0; i<ParamTable.table.length;i++)
         {
-            Parameter param = tableInstance.table[i];
-            if(param.isRanged)
+            Log.d("DATADB", "ParamTable.table.length = " + ParamTable.table.length);
+            if(ParamTable.table[i].isRanged)
             {
-                datas[i] = param.initVal;
+                datas[i] = ParamTable.table[i].initVal;
                 rangedSize ++;
             }
             else
@@ -66,11 +67,11 @@ public class DataDB {
         else if(idx==Param_idx.freq_max.ordinal())
         {
             minValue = datas[Param_idx.freq_min.ordinal()];
-            maxValue = tableInstance.table[idx].maxVal;
+            maxValue = ParamTable.table[idx].maxVal;
         }
         else if(idx==Param_idx.freq_min.ordinal())
         {
-            minValue = tableInstance.table[idx].minVal;
+            minValue = ParamTable.table[idx].minVal;
             maxValue = datas[Param_idx.freq_max.ordinal()];
         }
 
@@ -97,90 +98,90 @@ public class DataDB {
         else if(idx == Param_idx.jmp_high0.ordinal())
         {
             minValue = datas[Param_idx.jmp_low0.ordinal()];
-            maxValue = tableInstance.table[idx].maxVal;
+            maxValue = ParamTable.table[idx].maxVal;
         }
 
         else if(idx == Param_idx.jmp_high1.ordinal())
         {
             minValue = datas[Param_idx.jmp_low1.ordinal()];
-            maxValue = tableInstance.table[idx].maxVal;
+            maxValue = ParamTable.table[idx].maxVal;
         }
 
         else if(idx == Param_idx.jmp_high2.ordinal())
         {
             minValue = datas[Param_idx.jmp_low2.ordinal()];
-            maxValue = tableInstance.table[idx].maxVal;
+            maxValue = ParamTable.table[idx].maxVal;
         }
         else if(idx == Param_idx.v_in_max_freq.ordinal())
         {
             minValue = datas[Param_idx.v_in_min_freq.ordinal()];
-            maxValue = tableInstance.table[idx].maxVal;
+            maxValue = ParamTable.table[idx].maxVal;
         }
         /*else if(idx == Param_idx.i_in_max_freq.ordinal())
         {
             minValue = datas[Param_idx.i_in_min_freq.ordinal()];
-            maxValue = tableInstance.table[idx].maxVal;
+            maxValue = ParamTable.table[idx].maxVal;
         }*/
         else if(idx == Param_idx.v_in_max.ordinal())
         {
             minValue = datas[Param_idx.v_in_min.ordinal()];
-            maxValue = tableInstance.table[idx].maxVal;
+            maxValue = ParamTable.table[idx].maxVal;
         }
         /*
         else if(idx == Param_idx.i_in_max.ordinal())
         {
             minValue = datas[Param_idx.i_in_min.ordinal()];
-            maxValue = tableInstance.table[idx].maxVal;
+            maxValue = ParamTable.table[idx].maxVal;
         }
         */
 ///////////////
 
         else if(idx == Param_idx.jmp_low0.ordinal())
         {
-            minValue = tableInstance.table[idx].minVal;
+            minValue = ParamTable.table[idx].minVal;
             maxValue = datas[Param_idx.jmp_high0.ordinal()];
         }
 
         else if(idx == Param_idx.jmp_low1.ordinal())
         {
-            minValue = tableInstance.table[idx].minVal;
+            minValue = ParamTable.table[idx].minVal;
             maxValue = datas[Param_idx.jmp_high1.ordinal()];
         }
 
         else if(idx == Param_idx.jmp_low2.ordinal())
         {
-            minValue = tableInstance.table[idx].minVal;
+            minValue = ParamTable.table[idx].minVal;
             maxValue = datas[Param_idx.jmp_high2.ordinal()];
-            maxValue = tableInstance.table[idx].maxVal;
+            maxValue = ParamTable.table[idx].maxVal;
         }
         else if(idx == Param_idx.v_in_min_freq.ordinal())
         {
-            minValue = tableInstance.table[idx].minVal;
+            minValue = ParamTable.table[idx].minVal;
             maxValue = datas[Param_idx.v_in_max_freq.ordinal()];
         }
         /*
         else if(idx == Param_idx.i_in_min_freq.ordinal())
         {
-            minValue = tableInstance.table[idx].minVal;
+            minValue = ParamTable.table[idx].minVal;
             maxValue = datas[Param_idx.i_in_max_freq.ordinal()];
         }
         */
         else if(idx == Param_idx.v_in_min.ordinal())
         {
-            minValue = tableInstance.table[idx].minVal;
+            minValue = ParamTable.table[idx].minVal;
             maxValue = datas[Param_idx.v_in_max.ordinal()];
         }
         /*
         else if(idx == Param_idx.i_in_min.ordinal())
         {
-            minValue = tableInstance.table[idx].minVal;
+            minValue = ParamTable.table[idx].minVal;
             maxValue = datas[Param_idx.i_in_max.ordinal()];
         }
 */
         else
         {
-            minValue = tableInstance.table[idx].minVal;
-            maxValue = tableInstance.table[idx].maxVal;
+            minValue = ParamTable.table[idx].minVal;
+            maxValue = ParamTable.table[idx].maxVal;
         }
         //maxTest
         return intValue<=maxValue && intValue >=minValue;
@@ -189,9 +190,9 @@ public class DataDB {
     public boolean setValue(int idx, Object value)
     {
         int intValue = 0;
-        if(tableInstance.isValidIdx(idx))
+        if(ParamTable.isValidIdx(idx))
         {
-            switch(tableInstance.table[idx].data_type)
+            switch(ParamTable.table[idx].data_type)
             {
                 case ParamTable.AOUT_T:
                     intValue = (int)value;;
@@ -245,13 +246,13 @@ public class DataDB {
 
             if(!testSpecialRanges(idx, intValue))
             {
-                Log.d("[Failed]SetValue" , "["+idx+"]" +datas[idx] + ", data.ordinal() = " + tableInstance.table[idx].data_type + ", original value = "+value + ", intvalue=" + intValue);
+                Log.d("[Failed]SetValue" , "["+idx+"]" +datas[idx] + ", data.ordinal() = " + ParamTable.table[idx].data_type + ", original value = "+value + ", intvalue=" + intValue);
                 return false;
             }
 
             datas[idx] = intValue;
 
-            Log.d("SetValue" , "["+idx+"]" +datas[idx] + ", data.ordinal() = " + tableInstance.table[idx].data_type + ", original value = "+value + ", intvalue=" + intValue);
+            Log.d("SetValue" , "["+idx+"]" +datas[idx] + ", data.ordinal() = " + ParamTable.table[idx].data_type + ", original value = "+value + ", intvalue=" + intValue);
             return true;
         }
         return false;
@@ -260,10 +261,10 @@ public class DataDB {
     public Object getValue(int idx)
     {
         Object value = null;
-        if(tableInstance.isValidIdx(idx))
+        if(ParamTable.isValidIdx(idx))
         {
 
-            switch(tableInstance.table[idx].data_type)
+            switch(ParamTable.table[idx].data_type)
             {
 
                 case ParamTable.AOUT_T:
@@ -316,7 +317,7 @@ public class DataDB {
                     break;
             }
 
-            Log.d("GetValue:Object","getVal type= "+ tableInstance.table[idx].data_type + ", getVal = " + value+", original datas["+idx+"] = " + datas[idx]);
+            Log.d("GetValue:Object","getVal type= "+ ParamTable.table[idx].data_type + ", getVal = " + value+", original datas["+idx+"] = " + datas[idx]);
         }
         return value;
     }

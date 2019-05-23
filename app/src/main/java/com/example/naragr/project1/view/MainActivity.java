@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
         vibe = (Vibrator)
                 getSystemService(this.VIBRATOR_SERVICE);
 
-
+        //ParamTable.ParamTableInit();
         dataContainer = new DataContainer();
         //bar = findViewById(R.id.progressBar);
         if(!FileManager.isFileExist(new File(me.getFilesDir(), defaultFile)))

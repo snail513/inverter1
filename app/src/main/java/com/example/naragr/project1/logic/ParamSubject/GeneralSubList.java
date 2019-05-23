@@ -55,14 +55,14 @@ public class GeneralSubList extends SubList {
 
         for(int i = 0; i<subjectCount;i++)
         {
-            Parameter detail = DataDB.getInstance().table[i+subjectHead];
+            Parameter detail = ParamTable.table[i+subjectHead];
             int addr = i+subjectHead;
             DataDB.getDBInstance().setValue(addr, detail.initVal);
             names.add(ParamTable.getName(Param_idx.values()[addr]));
             System.out.println("[" + addr + "] detail.initVal" + detail.initVal);
 
         }
-        headAddr = DataDB.getInstance().table[subjectHead].addr;
+        headAddr = ParamTable.table[subjectHead].addr;
     }
 
     @Override
